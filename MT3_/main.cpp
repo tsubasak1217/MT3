@@ -16,6 +16,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vec3 v1 = { 1.0f,3.0f,-5.0f };
 	Vec3 v2 = { 4.0f,-1.0f,2.0f };
 	float k = 4.0f;
+
 	const int kRowHeight = 20;
 
 	// ウィンドウの×ボタンが押されるまでループ
