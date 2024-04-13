@@ -660,6 +660,39 @@ Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 translate) {
 	return matrix;
 };
 
+// 正則行列かどうか確認する関数--------------------------------------
+// 3x3 行列の行列式を計算する関数
+float Determinant3x3(const Matrix3x3& mat) {
+	return
+		(mat.m[0][0] * mat.m[1][1] * mat.m[2][2]) +
+		(mat.m[0][1] * mat.m[1][2] * mat.m[2][0]) +
+		(mat.m[0][2] * mat.m[1][0] * mat.m[2][1]) -
+		(mat.m[0][2] * mat.m[1][1] * mat.m[2][0]) -
+		(mat.m[0][1] * mat.m[1][0] * mat.m[2][2]) -
+		(mat.m[0][0] * mat.m[1][2] * mat.m[2][1]);
+}
+
+// 4x4 行列の行列式を計算する関数
+float Determinant4x4(const Matrix4x4& mat) {
+	float det = 0.0f;
+	for (int i = 0; i < 4; i++) {
+
+		Matrix3x3 minor;
+
+		for (int j = 0; j < 3; j++) {
+			int k = 0;
+			for (int l = 0; l < 4; l++) {
+				if (l != i) {
+					minor.m[j][k++] = mat.m[j + 1][l];
+				}
+			}
+		}
+
+		float subDet = Determinant3x3(minor);
+		det += (i % 2 == 0 ? 1.0f : -1.0f) * mat.m[0][i] * subDet;
+	}
+	return det;
+}
 
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix) {
@@ -707,7 +740,7 @@ Matrix3x3 InverseMatrix(const Matrix3x3& matrix) {
 }
 
 Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
-	
+
 	Matrix4x4 inv;
 	float sweep[4][8];
 
@@ -722,14 +755,72 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 	}
 
 
-	/* 全ての列の対角成分に対する繰り返し */
+	//// 左半分が単位行列になるまで繰り返す (右半分に逆行列が求められる)
+	//for (int col = 0; col < 4; col++) {
+
+	//	// 最大の絶対値を注目対角成分の絶対値と仮定 
+	//	float max = fabs(sweep[col][col]);
+	//	int max_row = col;
+
+	//	// k列目の対角要素より後ろで最大の絶対値となる行を探す
+	//	for (int row = col + 1; row < 4; row++) {
+	//		if (fabs(sweep[row][col]) > max) {
+	//			max = fabs(sweep[row][col]);
+	//			max_row = row;
+	//		}
+	//	}
+
+	//	// 最大値が0の場合、逆行列は求められない
+	//	assert(fabs(sweep[max_row][col]) > 0);
+
+	//	// k行目とmax_row行目を入れ替える
+	//	if (col != max_row) {
+	//		for (int col2 = 0; col2 < 8; col2++) {
+	//			float tmp = sweep[max_row][col2];
+	//			sweep[max_row][col2] = sweep[col][col2];
+	//			sweep[col][col2] = tmp;
+	//		}
+	//	}
+
+	//	for (int row = 0; row <= col; row++) {
+
+	//		// 行列の対角成分を見つけた時
+	//		if (row == col) {
+
+	//			// sweep[row][col]に掛けると" 1 "になる値を求める
+	//			float invNum = 1.0f / sweep[row][col];
+
+	//			// 今見ている行の要素すべてに先ほど求めたinvをかける
+	//			for (int col2 = 0; col2 < 8; col2++) {
+	//				sweep[row][col2] *= invNum;
+	//			}
+
+	//			// 対角成分以外を0にしていく
+	//			for (int row2 = 0; row2 < 4; row2++) {
+	//				if (row2 == row) { continue; }
+
+	//				// これで今見ている列の対角成分以外が0になる
+	//				for (int col2 = 0; col2 < 8; col2++) {
+	//					sweep[row2][col2] += -sweep[row2][col2] * sweep[row][col2];
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	// 左半分が単位行列になるまで繰り返す (右半分に逆行列が求められる)
 	for (int k = 0; k < 4; k++) {
+
+		/*------------------------------------------------------*/
+		/*				       	ソート、除外						*/
+		/*------------------------------------------------------*/
 
 		/* 最大の絶対値を注目対角成分の絶対値と仮定 */
 		float max = fabs(sweep[k][k]);
 		int max_i = k;
 
-		/* k列目が最大の絶対値となる行を探す */
+		// 今見ている対角成分より大きい絶対値を持つ要素がその列のその行より後にあるか探す
 		for (int i = k + 1; i < 4; i++) {
 			if (fabs(sweep[i][k]) > max) {
 				max = fabs(sweep[i][k]);
@@ -737,17 +828,10 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 			}
 		}
 
-		if (fabs(sweep[max_i][k]) <= 1e-10) {
-			/* 逆行列は求められない */
-			for (int i = 0; i < 4; i++) {
-				for (int j = 0; j < 4; j++) {
-					sweep[i][4 + j] = 0;
-				}
-			}
-			break;
-		}
+		// 最大値が0の場合、逆行列は求められない
+		assert(fabs(sweep[max_i][k]) > 0);
 
-		/* 操作（１）：k行目とmax_i行目を入れ替える */
+		// 見つかった場合、その要素が見つかった行と今の行の要素を入れ替える
 		if (k != max_i) {
 			for (int j = 0; j < 8; j++) {
 				float tmp = sweep[max_i][j];
@@ -756,28 +840,32 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 			}
 		}
 
-		/* sweep[k][k]に掛けると1になる値を求める */
+		/*------------------------------------------------------*/
+		/*				       	逆行列の計算						*/
+		/*------------------------------------------------------*/
+
+		/*--------- 今見ている列の対角成分を1にする ---------*/
+
+		// sweep[k][k]に掛けると1になる値を求める
 		float a = 1.0f / sweep[k][k];
 
-		/* 操作（２）：k行目をa倍する */
-		for (int j = 0; j < 8; j++) {
-			/* これによりsweep[k][k]が1になる */
+		for (int j = 0; j < 8; j++) {	
+			// この計算でsweep[k][k]が1になる 
+			// (対角成分以外にもその行すべての要素に掛ける。)
 			sweep[k][j] *= a;
 		}
 
-		/* 操作（３）によりk行目以外の行のk列目を0にする */
+		/*------- 今見ている列の対角成分以外を0にする -------*/
 		for (int i = 0; i < 4; i++) {
-			if (i == k) {
-				/* k行目はそのまま */
-				continue;
-			}
+			
+			if (i == k) {continue;}// 対角成分はそのまま
 
-			/* k行目に掛ける値を求める */
+			// 対角成分のある行以外に掛ける値を求める
 			a = -sweep[i][k];
 
 			for (int j = 0; j < 8; j++) {
-				/* i行目にk行目をa倍した行を足す */
-				/* これによりsweep[i][k]が0になる */
+				// 対角成分を1にした行をa倍して足していく
+				// するとsweep[i][k]が0になる ( 自分に対して 1 x -自分 を足しているため。)
 				sweep[i][j] += sweep[k][j] * a;
 			}
 		}
