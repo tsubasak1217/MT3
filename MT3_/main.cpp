@@ -27,7 +27,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		3.3f, 9.9f, 8.8f, 2.2f
 	);
 
-	Vec2 a({ 1.0f,1.0f });
+	int kRowHeight = 120;
+	int kColWidth = 280;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -50,7 +51,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, Transpose(m1));
+		MatrixScreenPrintf(0, 0, Add(m1,m2),"Add");
+		MatrixScreenPrintf(0, kRowHeight * 1, Subtract(m1, m2), "Subtract");
+		MatrixScreenPrintf(0, kRowHeight * 2, Multiply(m1, m2), "Multiply");
+		MatrixScreenPrintf(0, kRowHeight * 3, InverseMatrix(m1), "InverseM1");
+		MatrixScreenPrintf(0, kRowHeight * 4, InverseMatrix(m2), "InverseM2");
+
+		MatrixScreenPrintf(kColWidth * 1, 0, Transpose(m1), "TransposeM1");
+		MatrixScreenPrintf(kColWidth * 1, kRowHeight * 1, Transpose(m2), "TransposeM2");
+		MatrixScreenPrintf(kColWidth * 1, kRowHeight * 2, IdentityMat4(), "Identtity");
 
 		///
 		/// ↑描画処理ここまで

@@ -85,42 +85,80 @@ int FrameToClock(int count, int tranceMode) {
 //================================================================
 
 //長さを求める関数
-float CheckLength(Vec2 pos1, Vec2 pos2) {
+float Length(const Vec2& pos1, const Vec2& pos2) {
 	float xLength = (pos1.x - pos2.x);
 	float yLength = (pos1.y - pos2.y);
 	return sqrtf(xLength * xLength + yLength * yLength);
 }
-float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y) {
+float Length(const Vec3& pos1, const Vec3& pos2) {
+	float xLength = (pos1.x - pos2.x);
+	float yLength = (pos1.y - pos2.y);
+	float zLength = (pos1.z - pos2.z);
+	return sqrtf(xLength * xLength + yLength * yLength + zLength * zLength);
+}
+float Length(float pos1x, float pos1y, float pos2x, float pos2y) {
 	float xLength = pos2x - pos1x;
 	float yLength = pos2y - pos1y;
 	return sqrtf(xLength * xLength + yLength * yLength);
 }
+float Length(const Vec2& vec) {
+	return sqrtf(vec.x * vec.x + vec.y * vec.y);
+}
+float Length(const Vec3& vec) {
+	return sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+}
 
 //ノーマライズ関数
-Vec2 Normalize(Vec2 pos1, Vec2 pos2) {
+Vec2 Normalize(const Vec2& pos1, const Vec2& pos2) {
 
-	float xLength = (pos1.x - pos2.x);
-	float yLength = (pos1.y - pos2.y);
-	float length = CheckLength(pos1, pos2);
+	Vec2 vec = pos2 - pos1;
 
-	if (length != 0) {
-		return {
-			xLength / length,
-			yLength / length,
-		};
+	if (float length = Length(vec)) {
+		return vec / length;
 	} else {
-		return { 0,0 };
+		return { 0.0f,0.0f };
 	}
-};
+}
+Vec3 Normalize(const Vec3& pos1, const Vec3& pos2) {
+	Vec3 vec = pos2 - pos1;
+
+	if (float length = Length(vec)) {
+		return vec / length;
+	} else {
+		return { 0.0f,0.0f,0.0f };
+	}
+}
+Vec2 Normalize(const Vec2& vec) {
+	if (float length = Length(vec)) {
+		return vec / length;
+	} else {
+		return { 0.0f,0.0f };
+	}
+}
+Vec3 Normalize(const Vec3& vec) {
+	if (float length = Length(vec)) {
+		return vec / length;
+	} else {
+		return { 0.0f,0.0f,0.0f };
+	}
+}
 
 //内積を求める関数
-float Dot(Vec2 pos1, Vec2 pos2, Vec2 targetPos) {
+float Dot(const Vec2& pos1, const Vec2& pos2, const Vec2& targetPos) {
 
 	Vec2 lineVector = { pos2.x - pos1.x,pos2.y - pos1.y };
 	float lineLength = sqrtf(lineVector.x * lineVector.x + lineVector.y * lineVector.y);
 	Vec2 forTarget = { targetPos.x - pos1.x,targetPos.y - pos1.y };
 
 	return ((lineVector.x * forTarget.x) + (lineVector.y * forTarget.y)) / lineLength;
+}
+
+float Dot(const Vec2& a, const Vec2& b) {
+	return (a.x * b.x) + (a.y * b.y);
+}
+
+float Dot(const Vec3& a, const Vec3& b) {
+	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 };
 
 //外積を求める関数
@@ -415,7 +453,8 @@ Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 			result.m[i][j] =
 				(matrix1.m[i][0] * matrix2.m[0][j]) +
 				(matrix1.m[i][1] * matrix2.m[1][j]) +
-				(matrix1.m[i][2] * matrix2.m[2][j]);
+				(matrix1.m[i][2] * matrix2.m[2][j]) +
+				(matrix1.m[i][3] * matrix2.m[3][j]);
 		}
 	}
 
@@ -479,7 +518,41 @@ void Transform(Vec2& vector, Matrix3x3 matrix) {
 	result.y /= w;
 
 	vector = result;
-};
+}
+
+// 単位行列を返す関数
+Matrix2x2 IdentityMat2() {
+
+	Matrix2x2 identity(
+		1.0f, 0.0f,
+		0.0f, 1.0f
+	);
+
+	return identity;
+}
+
+Matrix3x3 IdentityMat3() {
+
+	Matrix3x3 identity(
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f
+	);
+
+	return identity;
+}
+
+Matrix4x4 IdentityMat4() {
+
+	Matrix4x4 identity(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+
+	return identity;
+}
 
 // 拡大縮小行列を作る関数
 Matrix3x3 ScaleMatrix(float scaleX, float scaleY) {
@@ -634,8 +707,90 @@ Matrix3x3 InverseMatrix(const Matrix3x3& matrix) {
 }
 
 Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
-	matrix;
-	return Matrix4x4();
+	
+	Matrix4x4 inv;
+	float sweep[4][8];
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			// sweepの左側に逆行列を求める行列をセット
+			sweep[i][j] = matrix.m[i][j];
+
+			// sweepの右半分は単位行列で初期化
+			sweep[i][4 + j] = (i == j) ? 1.0f : 0.0f;
+		}
+	}
+
+
+	/* 全ての列の対角成分に対する繰り返し */
+	for (int k = 0; k < 4; k++) {
+
+		/* 最大の絶対値を注目対角成分の絶対値と仮定 */
+		float max = fabs(sweep[k][k]);
+		int max_i = k;
+
+		/* k列目が最大の絶対値となる行を探す */
+		for (int i = k + 1; i < 4; i++) {
+			if (fabs(sweep[i][k]) > max) {
+				max = fabs(sweep[i][k]);
+				max_i = i;
+			}
+		}
+
+		if (fabs(sweep[max_i][k]) <= 1e-10) {
+			/* 逆行列は求められない */
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 4; j++) {
+					sweep[i][4 + j] = 0;
+				}
+			}
+			break;
+		}
+
+		/* 操作（１）：k行目とmax_i行目を入れ替える */
+		if (k != max_i) {
+			for (int j = 0; j < 8; j++) {
+				float tmp = sweep[max_i][j];
+				sweep[max_i][j] = sweep[k][j];
+				sweep[k][j] = tmp;
+			}
+		}
+
+		/* sweep[k][k]に掛けると1になる値を求める */
+		float a = 1.0f / sweep[k][k];
+
+		/* 操作（２）：k行目をa倍する */
+		for (int j = 0; j < 8; j++) {
+			/* これによりsweep[k][k]が1になる */
+			sweep[k][j] *= a;
+		}
+
+		/* 操作（３）によりk行目以外の行のk列目を0にする */
+		for (int i = 0; i < 4; i++) {
+			if (i == k) {
+				/* k行目はそのまま */
+				continue;
+			}
+
+			/* k行目に掛ける値を求める */
+			a = -sweep[i][k];
+
+			for (int j = 0; j < 8; j++) {
+				/* i行目にk行目をa倍した行を足す */
+				/* これによりsweep[i][k]が0になる */
+				sweep[i][j] += sweep[k][j] * a;
+			}
+		}
+	}
+
+	// sweepの右半分がmatrixの逆行列
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			inv.m[i][j] = sweep[i][4 + j];
+		}
+	}
+
+	return inv;
 };
 
 //転置行列を求める関数
@@ -771,7 +926,7 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char*
 			Novice::ScreenPrintf(
 				posX + col * 64,
 				posY + row * 20 + (bool(string) * 20),
-				"%.02f",
+				"%7.2f",
 				matrix.m[row][col]
 			);
 		}
@@ -788,7 +943,7 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char*
 			Novice::ScreenPrintf(
 				posX + col * 64,
 				posY + row * 20 + (bool(string) * 20),
-				"%.02f",
+				"%7.2f",
 				matrix.m[row][col]
 			);
 		}
@@ -805,7 +960,7 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char*
 			Novice::ScreenPrintf(
 				posX + col * 64,
 				posY + row * 20 + (bool(string) * 20),
-				"%.02f",
+				"%7.2f",
 				matrix.m[row][col]
 			);
 		}
@@ -858,14 +1013,14 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 
 		if (distX < 0 && distY < 0) {
 			if (
-				CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (distX >= 0 && distY < 0) {
 			if (
-				CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
 				return false;
@@ -873,7 +1028,7 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 
 		} else if (distX < 0 && distY >= 0) {
 			if (
-				CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
 				return false;
@@ -881,7 +1036,7 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 
 		} else {
 			if (
-				CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
 				return false;
@@ -926,7 +1081,7 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 	} else {
 
 		if (distX < 0 && distY >= 0) {//左上
-			if (CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+			if (Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
 				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 1;//上面に当たった
@@ -938,7 +1093,7 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 				return false;
 			}
 		} else if (distX >= 0 && distY >= 0) {//右上
-			if (CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+			if (Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
 				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 1;//上面に当たった
@@ -951,7 +1106,7 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 			}
 
 		} else if (distX < 0 && distY < 0) {//左下
-			if (CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+			if (Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
 				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 3;//上面に当たった
@@ -964,7 +1119,7 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 			}
 
 		} else {//右下
-			if (CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+			if (Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
 				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 3;//上面に当たった

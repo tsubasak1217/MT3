@@ -111,6 +111,11 @@ Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
 
 void Transform(Vec2& vector, Matrix3x3 matrix);
 
+// 単位行列を返す関数
+Matrix2x2 IdentityMat2();
+Matrix3x3 IdentityMat3();
+Matrix4x4 IdentityMat4();
+
 //目的に対応した行列を作る関数
 Matrix3x3 RotateMatrix(float theta);
 Matrix3x3 TranslateMatrix(float tx, float ty);
