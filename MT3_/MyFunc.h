@@ -39,14 +39,22 @@ int FrameToClock(int count, int tranceMode);
 //================================================================
 
 //長さを計る関数
-float CheckLength(Vec2 pos1, Vec2 pos2);
-float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y);
+float Length(const Vec2& pos1, const Vec2& pos2);
+float Length(const Vec3& pos1, const Vec3& pos2);
+float Length(float pos1x, float pos1y, float pos2x, float pos2y);
+float Length(const Vec2& vec);
+float Length(const Vec3& vec);
 
 //ノーマライズ関数
-Vec2 Normalize(Vec2 pos1, Vec2 pos2);
+Vec2 Normalize(const Vec2& pos1, const Vec2& pos2);
+Vec3 Normalize(const Vec3& pos1, const Vec3& pos2);
+Vec2 Normalize(const Vec2& vec);
+Vec3 Normalize(const Vec3& vec);
 
 //内積を求める
-float Dot(Vec2 pos1, Vec2 pos2, Vec2 targetPos);
+float Dot(const Vec2& pos1, const Vec2& pos2, const Vec2& targetPos);
+float Dot(const Vec2& a, const Vec2& b);
+float Dot(const Vec3& a, const Vec3& b);
 
 //外積を求める関数
 float Cross(
