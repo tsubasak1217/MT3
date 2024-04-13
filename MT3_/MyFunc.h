@@ -83,12 +83,20 @@ Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
 Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
 Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
+// ---------------積を求める----------------
 Vec2 Multiply(const Vec2& vector, const Matrix2x2& matrix);
 Vec2 Multiply(const Vec2& vector, const Matrix3x3& matrix);
 Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
 Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
 Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
+// --------------スカラー倍----------------
+Vec2 Multiply(const Vec2& vector, float scalar);
+Vec3 Multiply(const Vec3& vector, float scalar);
+Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar);
+Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar);
+Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar);
 
+// -----------------割り算------------------
 Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum);
 Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum);
 Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
@@ -131,7 +139,8 @@ Matrix3x3 WvpVpMatrix(
 void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char* string = 0);
 void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char* string = 0);
 void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string = 0);
-void VectorScreenPrintf(int posX, int posY, Vec2 vector, const char* string = 0);
+void VecScreenPrintf(int posX, int posY, const Vec2& vector, const char* string = 0);
+void VecScreenPrintf(int posX, int posY, const Vec3& vector, const char* string = 0);
 
 //================================================================
 //                     当たり判定関数

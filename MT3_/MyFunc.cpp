@@ -310,7 +310,7 @@ Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 	return result;
 };
 
-//割る
+// -----------------割り算------------------
 Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum) {
 	Matrix2x2 result;
 
@@ -349,7 +349,7 @@ Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum) {
 	return result;
 };
 
-// 乗算
+// ---------------積を求める----------------
 Vec2 Multiply(const Vec2& vector, const Matrix2x2& matrix) {
 
 	return {
@@ -420,7 +420,48 @@ Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 	}
 
 	return result;
-};
+}
+
+// --------------スカラー倍----------------
+Vec2 Multiply(const Vec2& vector, float scalar) {
+	return { vector.x * scalar,vector.y * scalar };
+}
+Vec3 Multiply(const Vec3& vector, float scalar) {
+	return { vector.x * scalar,vector.y * scalar,vector.z * scalar };
+}
+Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar) {
+
+	Matrix2x2 result;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			result.m[i][j] = matrix.m[i][j] * scalar;
+		}
+	}
+
+	return result;
+}
+Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar) {
+
+	Matrix3x3 result;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = matrix.m[i][j] * scalar;
+		}
+	}
+
+	return result;
+}
+Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
+
+	Matrix4x4 result;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = matrix.m[i][j] * scalar;
+		}
+	}
+
+	return result;
+}
 
 // 値を直接変える
 void Transform(Vec2& vector, Matrix3x3 matrix) {
@@ -720,14 +761,16 @@ Matrix3x3 WvpVpMatrix(
 //                        行列の表示の関数
 //================================================================
 
-void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix) {
+void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char* string) {
+
+	if (string) { Novice::ScreenPrintf(posX, posY, string); }
 
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
 
 			Novice::ScreenPrintf(
 				posX + col * 64,
-				posY + row * 20,
+				posY + row * 20 + (bool(string) * 20),
 				"%.02f",
 				matrix.m[row][col]
 			);
@@ -735,14 +778,16 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix) {
 	}
 };
 
-void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix) {
+void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char* string) {
+
+	if (string) { Novice::ScreenPrintf(posX, posY, string); }
 
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
 
 			Novice::ScreenPrintf(
 				posX + col * 64,
-				posY + row * 20,
+				posY + row * 20 + (bool(string) * 20),
 				"%.02f",
 				matrix.m[row][col]
 			);
@@ -750,7 +795,7 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix) {
 	}
 }
 
-void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string ) {
+void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string) {
 
 	if (string) { Novice::ScreenPrintf(posX, posY, string); }
 
@@ -767,10 +812,17 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char*
 	}
 }
 
-void Vec2ScreenPrintf(int posX, int posY, Vec2 vector) {
-
+void VecScreenPrintf(int posX, int posY, const Vec2& vector, const char* string) {
 	Novice::ScreenPrintf(posX, posY, "%.02f", vector.x);
 	Novice::ScreenPrintf(posX + 64, posY, "%.02f", vector.y);
+	Novice::ScreenPrintf(posX + 128, posY, string);
+};
+
+void VecScreenPrintf(int posX, int posY, const Vec3& vector, const char* string) {
+	Novice::ScreenPrintf(posX, posY, "%.02f", vector.x);
+	Novice::ScreenPrintf(posX + 64, posY, "%.02f", vector.y);
+	Novice::ScreenPrintf(posX + 128, posY, "%.02f", vector.z);
+	Novice::ScreenPrintf(posX + 192, posY, string);
 };
 
 //================================================================
