@@ -233,7 +233,7 @@ float negaZero(float num) {
 //================================================================
 
 // 加算
-Matrix2x2 Add(Matrix2x2 matrix1, Matrix2x2 matrix2) {
+Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
 	Matrix2x2 result;
 
@@ -245,7 +245,7 @@ Matrix2x2 Add(Matrix2x2 matrix1, Matrix2x2 matrix2) {
 
 	return result;
 };
-Matrix3x3 Add(Matrix3x3 matrix1, Matrix3x3 matrix2) {
+Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
 
 	Matrix3x3 result;
 
@@ -256,10 +256,23 @@ Matrix3x3 Add(Matrix3x3 matrix1, Matrix3x3 matrix2) {
 	}
 
 	return result;
-};
+}
+
+Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+
+	Matrix4x4 result;
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
+		}
+	}
+
+	return result;
+}
 
 // 減算
-Matrix2x2 Subtract(Matrix2x2 matrix1, Matrix2x2 matrix2) {
+Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
 	Matrix2x2 result;
 
@@ -271,12 +284,25 @@ Matrix2x2 Subtract(Matrix2x2 matrix1, Matrix2x2 matrix2) {
 
 	return result;
 };
-Matrix3x3 Subtract(Matrix3x3 matrix1, Matrix3x3 matrix2) {
+Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
 
 	Matrix3x3 result;
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
+		}
+	}
+
+	return result;
+};
+
+Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+
+	Matrix4x4 result;
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
 			result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
 		}
 	}
@@ -285,7 +311,7 @@ Matrix3x3 Subtract(Matrix3x3 matrix1, Matrix3x3 matrix2) {
 };
 
 //割る
-Matrix2x2 Devide(Matrix2x2 matrix, float devideNum) {
+Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum) {
 	Matrix2x2 result;
 
 	for (int i = 0; i < 2; i++) {
@@ -297,7 +323,7 @@ Matrix2x2 Devide(Matrix2x2 matrix, float devideNum) {
 	return result;
 };
 
-Matrix3x3 Devide(Matrix3x3 matrix, float devideNum) {
+Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum) {
 
 	Matrix3x3 result;
 
@@ -308,20 +334,32 @@ Matrix3x3 Devide(Matrix3x3 matrix, float devideNum) {
 	}
 
 	return result;
+}
+
+Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum) {
+
+	Matrix4x4 result;
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = matrix.m[i][j] / devideNum;
+		}
+	}
+
+	return result;
 };
 
 // 乗算
-Vec2 Multiply(Vec2 vector, Matrix2x2 matrix) {
+Vec2 Multiply(const Vec2& vector, const Matrix2x2& matrix) {
 
 	return {
 		vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0],
 		vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1]
 	};
 };
-Vec2 Multiply(Vec2 vector, Matrix3x3 matrix) {
+Vec2 Multiply(const Vec2& vector, const Matrix3x3& matrix) {
 	Vec2 result;
 	float w;
-
 
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + 1.0f * matrix.m[2][0];
 	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
@@ -334,7 +372,8 @@ Vec2 Multiply(Vec2 vector, Matrix3x3 matrix) {
 
 	return result;
 };
-Matrix2x2 Multiply(Matrix2x2 matrix1, Matrix2x2 matrix2) {
+
+Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
 	Matrix2x2 result;
 
@@ -349,7 +388,7 @@ Matrix2x2 Multiply(Matrix2x2 matrix1, Matrix2x2 matrix2) {
 
 	return result;
 };
-Matrix3x3 Multiply(Matrix3x3 matrix1, Matrix3x3 matrix2) {
+Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
 
 	Matrix3x3 result;
 
@@ -364,7 +403,25 @@ Matrix3x3 Multiply(Matrix3x3 matrix1, Matrix3x3 matrix2) {
 	}
 
 	return result;
+}
+
+Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
+
+	Matrix4x4 result;
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+
+			result.m[i][j] =
+				(matrix1.m[i][0] * matrix2.m[0][j]) +
+				(matrix1.m[i][1] * matrix2.m[1][j]) +
+				(matrix1.m[i][2] * matrix2.m[2][j]);
+		}
+	}
+
+	return result;
 };
+
 // 値を直接変える
 void Transform(Vec2& vector, Matrix3x3 matrix) {
 	Vec2 result;
@@ -491,7 +548,7 @@ Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 translate) {
 
 
 //逆行列を求める関数
-Matrix2x2 InverseMatrix(Matrix2x2 matrix) {
+Matrix2x2 InverseMatrix(const Matrix2x2& matrix) {
 
 	float det = (matrix.m[0][0] * matrix.m[1][1]) - (matrix.m[0][1] * matrix.m[1][0]);
 	assert(det != 0);
@@ -507,7 +564,7 @@ Matrix2x2 InverseMatrix(Matrix2x2 matrix) {
 	return Devide(result, det);
 };
 
-Matrix3x3 InverseMatrix(Matrix3x3 matrix) {
+Matrix3x3 InverseMatrix(const Matrix3x3& matrix) {
 
 	float det =
 		(matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2]) +
@@ -533,10 +590,15 @@ Matrix3x3 InverseMatrix(Matrix3x3 matrix) {
 	result.m[2][2] = matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0];
 
 	return Devide(result, det);
+}
+
+Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
+	matrix;
+	return Matrix4x4();
 };
 
 //転置行列を求める関数
-Matrix2x2 Transpose(Matrix2x2 matrix) {
+Matrix2x2 Transpose(const Matrix2x2& matrix) {
 
 	Matrix2x2 result;
 	result.m[0][0] = matrix.m[0][0];
@@ -548,7 +610,7 @@ Matrix2x2 Transpose(Matrix2x2 matrix) {
 	return result;
 };
 
-Matrix3x3 Transpose(Matrix3x3 matrix) {
+Matrix3x3 Transpose(const Matrix3x3& matrix) {
 
 	Matrix3x3 result;
 	result.m[0][0] = matrix.m[0][0];
@@ -564,7 +626,17 @@ Matrix3x3 Transpose(Matrix3x3 matrix) {
 	result.m[2][2] = matrix.m[2][2];
 
 	return result;
-};
+}
+
+Matrix4x4 Transpose(const Matrix4x4& matrix) {
+	Matrix4x4 result;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = matrix.m[j][i];
+		}
+	}
+	return result;
+}
 
 
 //正射影行列を求める関数
@@ -648,7 +720,7 @@ Matrix3x3 WvpVpMatrix(
 //                        行列の表示の関数
 //================================================================
 
-void MatrixScreenPrintf(int posX, int posY, Matrix2x2 matrix) {
+void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix) {
 
 	for (int row = 0; row < 2; row++) {
 		for (int col = 0; col < 2; col++) {
@@ -663,7 +735,7 @@ void MatrixScreenPrintf(int posX, int posY, Matrix2x2 matrix) {
 	}
 };
 
-void MatrixScreenPrintf(int posX, int posY, Matrix3x3 matrix) {
+void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix) {
 
 	for (int row = 0; row < 3; row++) {
 		for (int col = 0; col < 3; col++) {
@@ -676,7 +748,24 @@ void MatrixScreenPrintf(int posX, int posY, Matrix3x3 matrix) {
 			);
 		}
 	}
-};
+}
+
+void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string ) {
+
+	if (string) { Novice::ScreenPrintf(posX, posY, string); }
+
+	for (int row = 0; row < 4; row++) {
+		for (int col = 0; col < 4; col++) {
+
+			Novice::ScreenPrintf(
+				posX + col * 64,
+				posY + row * 20 + (bool(string) * 20),
+				"%.02f",
+				matrix.m[row][col]
+			);
+		}
+	}
+}
 
 void Vec2ScreenPrintf(int posX, int posY, Vec2 vector) {
 

@@ -75,19 +75,24 @@ float negaZero(float num);
 //================================================================
 //                      行列の計算関数
 //================================================================
-Matrix2x2 Add(Matrix2x2 matrix1, Matrix2x2 matrix2);
-Matrix3x3 Add(Matrix3x3 matrix1, Matrix3x3 matrix2);
+Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-Matrix2x2 Subtract(Matrix2x2 matrix1, Matrix2x2 matrix2);
-Matrix3x3 Subtract(Matrix3x3 matrix1, Matrix3x3 matrix2);
+Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-Matrix2x2 Devide(Matrix2x2 matrix, float devideNum);
-Matrix3x3 Devide(Matrix3x3 matrix, float devideNum);
+Vec2 Multiply(const Vec2& vector, const Matrix2x2& matrix);
+Vec2 Multiply(const Vec2& vector, const Matrix3x3& matrix);
+Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-Matrix2x2 Multiply(Matrix2x2 matrix1, Matrix2x2 matrix2);
-Matrix3x3 Multiply(Matrix3x3 matrix1, Matrix3x3 matrix2);
-Vec2 Multiply(Vec2 vector, Matrix2x2 matrix);
-Vec2 Multiply(Vec2 vector, Matrix3x3 matrix);
+Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum);
+Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum);
+Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
+
 void Transform(Vec2& vector, Matrix3x3 matrix);
 
 //目的に対応した行列を作る関数
@@ -99,12 +104,14 @@ Matrix3x3 ScaleMatrix(Vec2 scaleXY);
 Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 transLate);
 
 //逆行列を求める関数
-Matrix2x2 InverseMatrix(Matrix2x2 matrix);
-Matrix3x3 InverseMatrix(Matrix3x3 matrix);
+Matrix2x2 InverseMatrix(const Matrix2x2& matrix);
+Matrix3x3 InverseMatrix(const Matrix3x3& matrix);
+Matrix4x4 InverseMatrix(const Matrix4x4& matrix);
 
 //転置行列を求める関数
-Matrix2x2 Transpose(Matrix2x2 matrix);
-Matrix3x3 Transpose(Matrix3x3 matrix);
+Matrix2x2 Transpose(const Matrix2x2& matrix);
+Matrix3x3 Transpose(const Matrix3x3& matrix);
+Matrix4x4 Transpose(const Matrix4x4& matrix);
 
 //正射影行列を求める関数
 Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
@@ -121,9 +128,10 @@ Matrix3x3 WvpVpMatrix(
 );
 
 //行列の情報を表示する関数
-void MatrixScreenPrintf(int posX, int posY, Matrix2x2 matrix);
-void MatrixScreenPrintf(int posX, int posY, Matrix3x3 matrix);
-void Vec2ScreenPrintf(int posX, int posY, Vec2 vector);
+void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char* string = 0);
+void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char* string = 0);
+void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string = 0);
+void VectorScreenPrintf(int posX, int posY, Vec2 vector, const char* string = 0);
 
 //================================================================
 //                     当たり判定関数
