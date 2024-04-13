@@ -800,8 +800,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 
 		/*------- 今見ている列の対角成分以外を0にする -------*/
 		for (int row = 0; row < 4; row++) {
-			
-			if (row == col) {continue;}// 対角成分はそのまま
+
+			if (row == col) { continue; }// 対角成分はそのまま
 
 			// 対角成分のある行以外に掛ける値を求める
 			x = -sweep[row][col];
@@ -822,7 +822,7 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 	}
 
 	return inv;
-};
+}
 
 //転置行列を求める関数
 Matrix2x2 Transpose(const Matrix2x2& matrix) {
