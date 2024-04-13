@@ -39,14 +39,22 @@ int FrameToClock(int count, int tranceMode);
 //================================================================
 
 //長さを計る関数
-float CheckLength(Vec2 pos1, Vec2 pos2);
-float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y);
+float Length(const Vec2& pos1, const Vec2& pos2);
+float Length(const Vec3& pos1, const Vec3& pos2);
+float Length(float pos1x, float pos1y, float pos2x, float pos2y);
+float Length(const Vec2& vec);
+float Length(const Vec3& vec);
 
 //ノーマライズ関数
-Vec2 Normalize(Vec2 pos1, Vec2 pos2);
+Vec2 Normalize(const Vec2& pos1, const Vec2& pos2);
+Vec3 Normalize(const Vec3& pos1, const Vec3& pos2);
+Vec2 Normalize(const Vec2& vec);
+Vec3 Normalize(const Vec3& vec);
 
 //内積を求める
-float Dot(Vec2 pos1, Vec2 pos2, Vec2 targetPos);
+float Dot(const Vec2& pos1, const Vec2& pos2, const Vec2& targetPos);
+float Dot(const Vec2& a, const Vec2& b);
+float Dot(const Vec3& a, const Vec3& b);
 
 //外積を求める関数
 float Cross(
@@ -75,20 +83,38 @@ float negaZero(float num);
 //================================================================
 //                      行列の計算関数
 //================================================================
-Matrix2x2 Add(Matrix2x2 matrix1, Matrix2x2 matrix2);
-Matrix3x3 Add(Matrix3x3 matrix1, Matrix3x3 matrix2);
+Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-Matrix2x2 Subtract(Matrix2x2 matrix1, Matrix2x2 matrix2);
-Matrix3x3 Subtract(Matrix3x3 matrix1, Matrix3x3 matrix2);
+Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
-Matrix2x2 Devide(Matrix2x2 matrix, float devideNum);
-Matrix3x3 Devide(Matrix3x3 matrix, float devideNum);
+// ---------------積を求める----------------
+Vec2 Multiply(const Vec2& vector, const Matrix2x2& matrix);
+Vec2 Multiply(const Vec2& vector, const Matrix3x3& matrix);
+Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
+Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
+Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
+// --------------スカラー倍----------------
+Vec2 Multiply(const Vec2& vector, float scalar);
+Vec3 Multiply(const Vec3& vector, float scalar);
+Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar);
+Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar);
+Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar);
 
-Matrix2x2 Multiply(Matrix2x2 matrix1, Matrix2x2 matrix2);
-Matrix3x3 Multiply(Matrix3x3 matrix1, Matrix3x3 matrix2);
-Vec2 Multiply(Vec2 vector, Matrix2x2 matrix);
-Vec2 Multiply(Vec2 vector, Matrix3x3 matrix);
+// -----------------割り算------------------
+Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum);
+Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum);
+Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
+
 void Transform(Vec2& vector, Matrix3x3 matrix);
+
+// 単位行列を返す関数
+Matrix2x2 IdentityMat2();
+Matrix3x3 IdentityMat3();
+Matrix4x4 IdentityMat4();
 
 //目的に対応した行列を作る関数
 Matrix3x3 RotateMatrix(float theta);
@@ -99,12 +125,14 @@ Matrix3x3 ScaleMatrix(Vec2 scaleXY);
 Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 transLate);
 
 //逆行列を求める関数
-Matrix2x2 InverseMatrix(Matrix2x2 matrix);
-Matrix3x3 InverseMatrix(Matrix3x3 matrix);
+Matrix2x2 InverseMatrix(const Matrix2x2& matrix);
+Matrix3x3 InverseMatrix(const Matrix3x3& matrix);
+Matrix4x4 InverseMatrix(const Matrix4x4& matrix);
 
 //転置行列を求める関数
-Matrix2x2 Transpose(Matrix2x2 matrix);
-Matrix3x3 Transpose(Matrix3x3 matrix);
+Matrix2x2 Transpose(const Matrix2x2& matrix);
+Matrix3x3 Transpose(const Matrix3x3& matrix);
+Matrix4x4 Transpose(const Matrix4x4& matrix);
 
 //正射影行列を求める関数
 Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
@@ -121,9 +149,11 @@ Matrix3x3 WvpVpMatrix(
 );
 
 //行列の情報を表示する関数
-void MatrixScreenPrintf(int posX, int posY, Matrix2x2 matrix);
-void MatrixScreenPrintf(int posX, int posY, Matrix3x3 matrix);
-void Vec2ScreenPrintf(int posX, int posY, Vec2 vector);
+void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char* string = 0);
+void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char* string = 0);
+void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string = 0);
+void VecScreenPrintf(int posX, int posY, const Vec2& vector, const char* string = 0);
+void VecScreenPrintf(int posX, int posY, const Vec3& vector, const char* string = 0);
 
 //================================================================
 //                     当たり判定関数

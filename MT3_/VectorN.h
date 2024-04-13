@@ -6,7 +6,7 @@ struct Vector2 final {
 	T y = 0;
 
 	// ADD-----------------------------------
-	Vector2 operator+(const Vector2& obj) {
+	Vector2 operator+(const Vector2& obj) const {
 		Vector2 result;
 		result.x = x + obj.x;
 		result.y = y + obj.y;
@@ -17,7 +17,7 @@ struct Vector2 final {
 		x += obj.x;
 		y += obj.y;
 	}
-	Vector2 operator+(float obj) {
+	Vector2 operator+(float obj) const {
 		Vector2 result;
 		result.x = x + obj;
 		result.y = y + obj;
@@ -30,7 +30,7 @@ struct Vector2 final {
 	}
 
 	// SUB---------------------------------
-	Vector2 operator-(const Vector2& obj) {
+	Vector2 operator- (const Vector2& obj) const {
 		Vector2 result;
 		result.x = x - obj.x;
 		result.y = y - obj.y;
@@ -41,7 +41,7 @@ struct Vector2 final {
 		x -= obj.x;
 		y -= obj.y;
 	}
-	Vector2 operator-(float obj) {
+	Vector2 operator-(float obj) const {
 		Vector2 result;
 		result.x = x - obj;
 		result.y = y - obj;
@@ -54,7 +54,7 @@ struct Vector2 final {
 	}
 
 	// MULTIPLY-----------------------
-	Vector2 operator*(const Vector2& obj) {
+	Vector2 operator*(const Vector2& obj) const {
 		Vector2 result;
 		result.x = x * obj.x;
 		result.y = y * obj.y;
@@ -65,7 +65,7 @@ struct Vector2 final {
 		x *= obj.x;
 		y *= obj.y;
 	}
-	Vector2 operator*(float obj) {
+	Vector2 operator*(float obj) const {
 		Vector2 result;
 		result.x = x * obj;
 		result.y = y * obj;
@@ -75,6 +75,28 @@ struct Vector2 final {
 	void operator*=(float obj) {
 		x *= obj;
 		y *= obj;
+	}
+
+	// DEVIDE---------------------------------
+	Vector2 operator/(float obj) const {
+		return  {
+		y / obj,
+		x / obj
+		};
+	}
+	Vector2 operator/(const Vector2& obj) const {
+		return  {
+		x / obj.x,
+		y / obj.y
+		};
+	}
+	void operator/=(float obj) {
+		x = x / obj;
+		y = y / obj;
+	}
+	void operator/=(const Vector2& obj) {
+		x = x / obj.x;
+		y = y / obj.y;
 	}
 };
 using Vec2 = Vector2<float>;
@@ -86,7 +108,7 @@ struct Vector3 final {
 	T z = 0;
 
 	// ADD----------------------------------
-	Vector3 operator+(const Vector3& obj) {
+	Vector3 operator+(const Vector3& obj) const {
 		Vector3 result;
 		result.x = x + obj.x;
 		result.y = y + obj.y;
@@ -99,7 +121,7 @@ struct Vector3 final {
 		y += obj.y;
 		z += obj.z;
 	}
-	Vector3 operator+(float obj) {
+	Vector3 operator+(float obj) const {
 		Vector3 result;
 		result.x = x + obj;
 		result.y = y + obj;
@@ -115,7 +137,7 @@ struct Vector3 final {
 
 
 	// SUB--------------------------
-	Vector3 operator-(const Vector3& obj) {
+	Vector3 operator-(const Vector3& obj) const {
 		Vector3 result;
 		result.x = x - obj.x;
 		result.y = y - obj.y;
@@ -128,7 +150,7 @@ struct Vector3 final {
 		y -= obj.y;
 		z -= obj.z;
 	}
-	Vector3 operator-(float obj) {
+	Vector3 operator-(float obj) const {
 		Vector3 result;
 		result.x = x - obj;
 		result.y = y - obj;
@@ -143,7 +165,7 @@ struct Vector3 final {
 	}
 
 	// MULTIPLY-----------------------------
-	Vector3 operator*(const Vector3& obj) {
+	Vector3 operator*(const Vector3& obj) const {
 		Vector3 result;
 		result.x = x * obj.x;
 		result.y = y * obj.y;
@@ -156,7 +178,7 @@ struct Vector3 final {
 		y *= obj.y;
 		z *= obj.z;
 	}
-	Vector3 operator*(float obj) {
+	Vector3 operator*(float obj) const {
 		Vector3 result;
 		result.x = x * obj;
 		result.y = y * obj;
@@ -169,6 +191,31 @@ struct Vector3 final {
 		y *= obj;
 		z *= obj;
 	}
+	// DEVIDE---------------------------------
+	Vector3 operator/(float obj) const {
+		return  {
+		x / obj,
+		y / obj,
+		z / obj
+		};
+	}
+	Vector3 operator/(const Vector3& obj) const {
+		return  {
+		x / obj.x,
+		y / obj.y,
+		z / obj.z
+		};
+	}
+	void operator/=(float obj) {
+		x = x / obj;
+		y = y / obj;
+		z = z / obj;
+	}
+	void operator/=(const Vector3& obj) {
+		x = x / obj.x;
+		y = y / obj.y;
+		z = z / obj.z;
+	}
 };
 using Vec3 = Vector3<float>;
 
@@ -180,7 +227,7 @@ struct Vector4 final {
 	T w = 0;
 
 	// ADD----------------------------------
-	Vector4 operator+(const Vector4& obj) {
+	Vector4 operator+(const Vector4& obj) const {
 		Vector4 result;
 		result.x = x + obj.x;
 		result.y = y + obj.y;
@@ -195,7 +242,7 @@ struct Vector4 final {
 		y += obj.y;
 		w += obj.w;
 	}
-	Vector4 operator+(float obj) {
+	Vector4 operator+(float obj) const {
 		Vector4 result;
 		result.x = x + obj;
 		result.y = y + obj;
@@ -213,7 +260,7 @@ struct Vector4 final {
 
 
 	// SUB----------------------------------
-	Vector4 operator-(const Vector4& obj) {
+	Vector4 operator-(const Vector4& obj) const {
 		Vector4 result;
 		result.x = x - obj.x;
 		result.y = y - obj.y;
@@ -228,7 +275,7 @@ struct Vector4 final {
 		z -= obj.z;
 		w -= obj.w;
 	}
-	Vector4 operator-(float obj) {
+	Vector4 operator-(float obj) const {
 		Vector4 result;
 		result.x = x - obj;
 		result.y = y - obj;
@@ -245,7 +292,7 @@ struct Vector4 final {
 	}
 
 	// MULTIPLY-----------------------------
-	Vector4 operator*(const Vector4& obj) {
+	Vector4 operator*(const Vector4& obj) const {
 		Vector4 result;
 		result.x = x * obj.x;
 		result.y = y * obj.y;
@@ -260,7 +307,7 @@ struct Vector4 final {
 		z *= obj.z;
 		w *= obj.w;
 	}
-	Vector4 operator*(float obj) {
+	Vector4 operator*(float obj) const {
 		Vector4 result;
 		result.x = x * obj;
 		result.y = y * obj;
