@@ -83,10 +83,13 @@ float negaZero(float num);
 //================================================================
 //                      行列の計算関数
 //================================================================
+
+// -----------------加算------------------
 Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
 Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
 Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
 
+// -----------------減算------------------
 Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2);
 Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2);
 Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2);
@@ -109,20 +112,34 @@ Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum);
 Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum);
 Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum);
 
-void Transform(Vec2& vector, Matrix3x3 matrix);
+// 同時座標系からデカルト座標系に変換する関数
+Vec2 Transform(const Vec2& vector, const Matrix3x3& matrix);
+Vec3 Transform(const Vec3& vector, const Matrix4x4& matrix);
 
 // 単位行列を返す関数
 Matrix2x2 IdentityMat2();
 Matrix3x3 IdentityMat3();
 Matrix4x4 IdentityMat4();
 
-//目的に対応した行列を作る関数
-Matrix3x3 RotateMatrix(float theta);
-Matrix3x3 TranslateMatrix(float tx, float ty);
-Matrix3x3 TranslateMatrix(Vec2 txy);
+// 拡大縮小行列を作る関数
 Matrix3x3 ScaleMatrix(float scaleX, float scaleY);
-Matrix3x3 ScaleMatrix(Vec2 scaleXY);
+Matrix3x3 ScaleMatrix(const Vec2& scale);
+Matrix4x4 ScaleMatrix(float scaleX, float scaleY,float scaleZ);
+Matrix4x4 ScaleMatrix(const Vec3& scale);
+
+// 回転行列を作る関数
+Matrix3x3 RotateMatrix(float theta);
+//Matrix4x4 RotateMatrix(const Vec3& rotate);
+
+// 平行移動行列を作る関数
+Matrix3x3 TranslateMatrix(float tx, float ty);
+Matrix3x3 TranslateMatrix(const Vec2& t);
+Matrix4x4 TranslateMatrix(float tx, float ty, float tz);
+Matrix4x4 TranslateMatrix(const Vec3& t);
+
+// アフィン変換行列を作る関数
 Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 transLate);
+//Matrix4x4 AffineMatrix(const Vec3& scale, const Vec3& rotate, const Vec3& translate);
 
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix);

@@ -502,22 +502,39 @@ Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
 	return result;
 }
 
-// 値を直接変える
-void Transform(Vec2& vector, Matrix3x3 matrix) {
+// 同時座標系からデカルト座標系に変換する関数
+Vec2 Transform(const Vec2& vector, const Matrix3x3& matrix) {
 	Vec2 result;
 	float w;
 
-
-	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + 1.0f * matrix.m[2][0];
-	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
-	w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + matrix.m[2][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + matrix.m[2][1];
+	w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + matrix.m[2][2];
 
 	assert(w != 0);
 
 	result.x /= w;
 	result.y /= w;
 
-	vector = result;
+	return result;
+}
+
+Vec3 Transform(const Vec3& vector, const Matrix4x4& matrix) {
+	Vec3 result;
+	float w;
+
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2];
+	w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + matrix.m[3][3];
+
+	assert(w != 0);
+
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
+
+	return result;
 }
 
 // 単位行列を返す関数
@@ -554,7 +571,7 @@ Matrix4x4 IdentityMat4() {
 	return identity;
 }
 
-// 拡大縮小行列を作る関数
+/*------------------------- 拡大縮小行列を作る関数 --------------------------*/
 Matrix3x3 ScaleMatrix(float scaleX, float scaleY) {
 	Matrix3x3 matrix;
 	matrix.m[0][0] = scaleX;
@@ -570,16 +587,16 @@ Matrix3x3 ScaleMatrix(float scaleX, float scaleY) {
 	matrix.m[2][2] = 1;
 
 	return matrix;
-};
+}
 
-Matrix3x3 ScaleMatrix(Vec2 scaleXY) {
+Matrix3x3 ScaleMatrix(const Vec2& scale) {
 	Matrix3x3 matrix;
-	matrix.m[0][0] = scaleXY.x;
+	matrix.m[0][0] = scale.x;
 	matrix.m[0][1] = 0;
 	matrix.m[0][2] = 0;
 
 	matrix.m[1][0] = 0;
-	matrix.m[1][1] = scaleXY.y;
+	matrix.m[1][1] = scale.y;
 	matrix.m[1][2] = 0;
 
 	matrix.m[2][0] = 0;
@@ -587,8 +604,59 @@ Matrix3x3 ScaleMatrix(Vec2 scaleXY) {
 	matrix.m[2][2] = 1;
 
 	return matrix;
-};
-// 回転行列を作る関数
+}
+
+Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ) {
+	Matrix4x4 matrix;
+	matrix.m[0][0] = scaleX;
+	matrix.m[0][1] = 0;
+	matrix.m[0][2] = 0;
+	matrix.m[0][3] = 0;
+
+	matrix.m[1][0] = 0;
+	matrix.m[1][1] = scaleY;
+	matrix.m[1][2] = 0;
+	matrix.m[1][3] = 0;
+
+	matrix.m[2][0] = 0;
+	matrix.m[2][1] = 0;
+	matrix.m[2][2] = scaleZ;
+	matrix.m[2][3] = 0;
+
+	matrix.m[3][0] = 0;
+	matrix.m[3][1] = 0;
+	matrix.m[3][2] = 0;
+	matrix.m[3][3] = 1;
+
+	return matrix;
+}
+
+Matrix4x4 ScaleMatrix(const Vec3& scale) {
+	Matrix4x4 matrix;
+	matrix.m[0][0] = scale.x;
+	matrix.m[0][1] = 0;
+	matrix.m[0][2] = 0;
+	matrix.m[0][3] = 0;
+
+	matrix.m[1][0] = 0;
+	matrix.m[1][1] = scale.y;
+	matrix.m[1][2] = 0;
+	matrix.m[1][3] = 0;
+
+	matrix.m[2][0] = 0;
+	matrix.m[2][1] = 0;
+	matrix.m[2][2] = scale.z;
+	matrix.m[2][3] = 0;
+
+	matrix.m[3][0] = 0;
+	matrix.m[3][1] = 0;
+	matrix.m[3][2] = 0;
+	matrix.m[3][3] = 1;
+
+	return matrix;
+}
+
+/*------------------------- 回転行列を作る関数 --------------------------*/
 Matrix3x3 RotateMatrix(float theta) {
 
 	Matrix3x3 result;
@@ -606,42 +674,44 @@ Matrix3x3 RotateMatrix(float theta) {
 
 	return result;
 };
-// 平行移動行列を作る関数
+
+/*------------------------- 平行移動行列を作る関数 --------------------------*/
 Matrix3x3 TranslateMatrix(float tx, float ty) {
 	Matrix3x3 matrix;
-	matrix.m[0][0] = 1;
-	matrix.m[0][1] = 0;
-	matrix.m[0][2] = 0;
-
-	matrix.m[1][0] = 0;
-	matrix.m[1][1] = 1;
-	matrix.m[1][2] = 0;
-
-	matrix.m[2][0] = tx;
-	matrix.m[2][1] = ty;
-	matrix.m[2][2] = 1;
-
+	matrix.m[0][0] = 1;  matrix.m[0][1] = 0;  matrix.m[0][2] = 0;
+	matrix.m[1][0] = 0;  matrix.m[1][1] = 1;  matrix.m[1][2] = 0;
+	matrix.m[2][0] = tx; matrix.m[2][1] = ty; matrix.m[2][2] = 1;
 	return matrix;
 }
 
-Matrix3x3 TranslateMatrix(Vec2 txy) {
+Matrix3x3 TranslateMatrix(const Vec2& t) {
 	Matrix3x3 matrix;
-	matrix.m[0][0] = 1;
-	matrix.m[0][1] = 0;
-	matrix.m[0][2] = 0;
-
-	matrix.m[1][0] = 0;
-	matrix.m[1][1] = 1;
-	matrix.m[1][2] = 0;
-
-	matrix.m[2][0] = txy.x;
-	matrix.m[2][1] = txy.y;
-	matrix.m[2][2] = 1;
-
+	matrix.m[0][0] = 1;   matrix.m[0][1] = 0;   matrix.m[0][2] = 0;
+	matrix.m[1][0] = 0;   matrix.m[1][1] = 1;   matrix.m[1][2] = 0;
+	matrix.m[2][0] = t.x; matrix.m[2][1] = t.y; matrix.m[2][2] = 1;
 	return matrix;
 }
 
-// アフィン行列を作る関数
+Matrix4x4 TranslateMatrix(float tx, float ty, float tz) {
+	Matrix4x4 matrix;
+	matrix.m[0][0] = 1;  matrix.m[0][1] = 0;  matrix.m[0][2] = 0;  matrix.m[0][3] = 0;
+	matrix.m[1][0] = 0;  matrix.m[1][1] = 1;  matrix.m[1][2] = 0;  matrix.m[1][3] = 0;
+	matrix.m[2][0] = 0;  matrix.m[2][1] = 0;  matrix.m[2][2] = 1;  matrix.m[2][3] = 0;
+	matrix.m[3][0] = tx; matrix.m[3][1] = ty; matrix.m[3][2] = tz; matrix.m[3][3] = 1;
+	return matrix;
+}
+
+Matrix4x4 TranslateMatrix(const Vec3& t) {
+	Matrix4x4 matrix;
+	matrix.m[0][0] = 1;   matrix.m[0][1] = 0;   matrix.m[0][2] = 0;   matrix.m[0][3] = 0;
+	matrix.m[1][0] = 0;   matrix.m[1][1] = 1;   matrix.m[1][2] = 0;   matrix.m[1][3] = 0;
+	matrix.m[2][0] = 0;   matrix.m[2][1] = 0;   matrix.m[2][2] = 1;   matrix.m[2][3] = 0;
+	matrix.m[3][0] = t.x; matrix.m[3][1] = t.y; matrix.m[3][2] = t.z; matrix.m[3][3] = 1;
+	return matrix;
+}
+
+
+/*------------------------- アフィン行列を作る関数 --------------------------*/
 Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 translate) {
 
 	Matrix3x3 matrix;
@@ -800,8 +870,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 
 		/*------- 今見ている列の対角成分以外を0にする -------*/
 		for (int row = 0; row < 4; row++) {
-			
-			if (row == col) {continue;}// 対角成分はそのまま
+
+			if (row == col) { continue; }// 対角成分はそのまま
 
 			// 対角成分のある行以外に掛ける値を求める
 			x = -sweep[row][col];
