@@ -1,6 +1,7 @@
 ﻿#pragma once
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 #include <stdio.h>
 #include <time.h>
 #include <Novice.h>
@@ -129,7 +130,7 @@ Matrix4x4 ScaleMatrix(const Vec3& scale);
 
 // 回転行列を作る関数
 Matrix3x3 RotateMatrix(float theta);
-//Matrix4x4 RotateMatrix(const Vec3& rotate);
+Matrix4x4 RotateMatrix(const Vec3& rotate);
 
 // 平行移動行列を作る関数
 Matrix3x3 TranslateMatrix(float tx, float ty);

@@ -660,12 +660,12 @@ Matrix4x4 ScaleMatrix(const Vec3& scale) {
 Matrix3x3 RotateMatrix(float theta) {
 
 	Matrix3x3 result;
-	result.m[0][0] = cosf(theta);
-	result.m[0][1] = sinf(theta);
+	result.m[0][0] = std::cos(theta);
+	result.m[0][1] = std::sin(theta);
 	result.m[0][2] = 0.0f;
 
-	result.m[1][0] = -sinf(theta);
-	result.m[1][1] = cosf(theta);
+	result.m[1][0] = -std::sin(theta);
+	result.m[1][1] = std::cos(theta);
 	result.m[1][2] = 0.0f;
 
 	result.m[2][0] = 0;
@@ -673,7 +673,100 @@ Matrix3x3 RotateMatrix(float theta) {
 	result.m[2][2] = 1;
 
 	return result;
-};
+}
+
+Matrix4x4 RotateMatrix(const Vec3& rotate) {
+	Matrix4x4 rotateMat[3];
+
+	/*-------X軸の回転行列-------*/
+	if (rotate.x) {
+
+		float sin = std::sin(rotate.x);
+		float cos = std::cos(rotate.x);
+
+		rotateMat[0].m[0][0] = 1;
+		rotateMat[0].m[1][0] = 0;
+		rotateMat[0].m[2][0] = 0;
+		rotateMat[0].m[3][0] = 0;
+
+		rotateMat[0].m[0][1] = 0;
+		rotateMat[0].m[1][1] = cos;
+		rotateMat[0].m[2][1] = -sin;
+		rotateMat[0].m[3][1] = 0;
+
+		rotateMat[0].m[0][2] = 0;
+		rotateMat[0].m[1][2] = sin;
+		rotateMat[0].m[2][2] = cos;
+		rotateMat[0].m[3][2] = 0;
+
+		rotateMat[0].m[0][3] = 0;
+		rotateMat[0].m[1][3] = 0;
+		rotateMat[0].m[2][3] = 0;
+		rotateMat[0].m[3][3] = 1;
+	} else {
+		rotateMat[0] = IdentityMat4();
+	}
+
+	/*-------Y軸の回転行列-------*/
+	if (rotate.y) {
+
+		float sin = std::sin(rotate.y);
+		float cos = std::cos(rotate.y);
+
+		rotateMat[1].m[0][0] = cos;
+		rotateMat[1].m[1][0] = 0;
+		rotateMat[1].m[2][0] = sin;
+		rotateMat[1].m[3][0] = 0;
+
+		rotateMat[1].m[0][1] = 0;
+		rotateMat[1].m[1][1] = 1;
+		rotateMat[1].m[2][1] = 0;
+		rotateMat[1].m[3][1] = 0;
+
+		rotateMat[1].m[0][2] = -sin;
+		rotateMat[1].m[1][2] = 0;
+		rotateMat[1].m[2][2] = cos;
+		rotateMat[1].m[3][2] = 0;
+
+		rotateMat[1].m[0][3] = 0;
+		rotateMat[1].m[1][3] = 0;
+		rotateMat[1].m[2][3] = 0;
+		rotateMat[1].m[3][3] = 1;
+	} else {
+		rotateMat[1] = IdentityMat4();
+	}
+
+	/*-------Z軸の回転行列-------*/
+	if (rotate.z) {
+
+		float sin = std::sin(rotate.z);
+		float cos = std::cos(rotate.z);
+
+		rotateMat[2].m[0][0] = cos;
+		rotateMat[2].m[1][0] = -sin;
+		rotateMat[2].m[2][0] = 0;
+		rotateMat[2].m[3][0] = 0;
+
+		rotateMat[2].m[0][1] = sin;
+		rotateMat[2].m[1][1] = cos;
+		rotateMat[2].m[2][1] = 0;
+		rotateMat[2].m[3][1] = 0;
+
+		rotateMat[2].m[0][2] = 0;
+		rotateMat[2].m[1][2] = 0;
+		rotateMat[2].m[2][2] = 1;
+		rotateMat[2].m[3][2] = 0;
+
+		rotateMat[2].m[0][3] = 0;
+		rotateMat[2].m[1][3] = 0;
+		rotateMat[2].m[2][3] = 0;
+		rotateMat[2].m[3][3] = 1;
+	} else {
+		rotateMat[2] = IdentityMat4();
+	}
+
+	return Multiply(rotateMat[0],Multiply(rotateMat[1],rotateMat[2]));
+}
 
 /*------------------------- 平行移動行列を作る関数 --------------------------*/
 Matrix3x3 TranslateMatrix(float tx, float ty) {
