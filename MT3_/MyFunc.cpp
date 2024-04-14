@@ -821,7 +821,15 @@ Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 translate) {
 	matrix.m[2][2] = 1;
 
 	return matrix;
-};
+}
+
+Matrix4x4 AffineMatrix(const Vec3& scale, const Vec3& rotate, const Vec3& translate) {
+	Matrix4x4 matrix(Multiply(ScaleMatrix(scale),RotateMatrix(rotate)));
+	matrix.m[3][0] = translate.x;
+	matrix.m[3][1] = translate.y;
+	matrix.m[3][2] = translate.z;
+	return matrix;
+}
 
 // 正則行列かどうか確認する関数--------------------------------------
 // 3x3 行列の行列式を計算する関数

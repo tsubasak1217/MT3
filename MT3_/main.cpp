@@ -13,8 +13,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
+	Vec3 scale(1.2f, 0.79f,-2.1f);
 	Vec3 rotate(0.4f, 1.43f, -0.8f);
-	const int kRowHeight = 120;
+	Vec3 translate(2.7f, -4.15f, 1.57f);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -37,10 +38,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, RotateMatrix({ rotate.x,0.0f,0.0f }), "RotateX");
-		MatrixScreenPrintf(0, kRowHeight, RotateMatrix({ 0.0f,rotate.y,0.0f }), "RotateY");
-		MatrixScreenPrintf(0, kRowHeight * 2, RotateMatrix({ 0.0f,0.0f,rotate.z }), "RotateZ");
-		MatrixScreenPrintf(0, kRowHeight * 3, RotateMatrix(rotate), "Result");
+		MatrixScreenPrintf(0, 0, AffineMatrix(scale,rotate,translate), "worldMatrix");
 
 		///
 		/// ↑描画処理ここまで

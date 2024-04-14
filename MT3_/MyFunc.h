@@ -140,7 +140,7 @@ Matrix4x4 TranslateMatrix(const Vec3& t);
 
 // アフィン変換行列を作る関数
 Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 transLate);
-//Matrix4x4 AffineMatrix(const Vec3& scale, const Vec3& rotate, const Vec3& translate);
+Matrix4x4 AffineMatrix(const Vec3& scale, const Vec3& rotate, const Vec3& translate);
 
 //逆行列を求める関数
 Matrix2x2 InverseMatrix(const Matrix2x2& matrix);
