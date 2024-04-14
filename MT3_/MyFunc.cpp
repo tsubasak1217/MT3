@@ -490,6 +490,7 @@ Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar) {
 
 	return result;
 }
+
 Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
 
 	Matrix4x4 result;
