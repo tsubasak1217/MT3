@@ -765,7 +765,7 @@ Matrix4x4 RotateMatrix(const Vec3& rotate) {
 		rotateMat[2] = IdentityMat4();
 	}
 
-	return Multiply(rotateMat[0],Multiply(rotateMat[1],rotateMat[2]));
+	return Multiply(rotateMat[0], Multiply(rotateMat[1], rotateMat[2]));
 }
 
 /*------------------------- 平行移動行列を作る関数 --------------------------*/
@@ -824,7 +824,7 @@ Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 translate) {
 }
 
 Matrix4x4 AffineMatrix(const Vec3& scale, const Vec3& rotate, const Vec3& translate) {
-	Matrix4x4 matrix(Multiply(ScaleMatrix(scale),RotateMatrix(rotate)));
+	Matrix4x4 matrix(Multiply(ScaleMatrix(scale), RotateMatrix(rotate)));
 	matrix.m[3][0] = translate.x;
 	matrix.m[3][1] = translate.y;
 	matrix.m[3][2] = translate.z;
@@ -1055,10 +1055,68 @@ Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom) {
 	result.m[2][2] = 1;
 
 	return result;
-};
+}
+
+Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar) {
+
+	Matrix4x4 result;
+
+	result.m[0][0] = 2.0f / (right - left);
+	result.m[0][1] = 0;
+	result.m[0][2] = 0;
+	result.m[0][3] = 0;
+
+	result.m[1][0] = 0;
+	result.m[1][1] = 2.0f / (top - bottom);
+	result.m[1][2] = 0;
+	result.m[1][3] = 0;
+
+	result.m[2][0] = 0;
+	result.m[2][1] = 0;
+	result.m[2][2] = 1.0f / (zfar - znear);
+	result.m[2][3] = 0;
+
+	result.m[3][0] = (left + right) / (left - right);
+	result.m[3][1] = (top + bottom) / (bottom - top);
+	result.m[3][2] = znear / (znear - zfar);
+	result.m[3][3] = 1;
+
+	return result;
+}
+
+float AspectRatio(float windowWidth, float windowHeight) {
+	return windowHeight / windowWidth;
+}
+
+Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar) {
+
+	Matrix4x4 result;
+
+	result.m[0][0] = (1.0f / aspectRatio) * (1.0f / std::tan(fovY / 2.0f));
+	result.m[0][1] = 0;
+	result.m[0][2] = 0;
+	result.m[0][3] = 0;
+
+	result.m[1][0] = 0;
+	result.m[1][1] = 1.0f / std::tan(fovY / 2.0f);
+	result.m[1][2] = 0;
+	result.m[1][3] = 0;
+
+	result.m[2][0] = 0;
+	result.m[2][1] = 0;
+	result.m[2][2] = zfar / (zfar - znear);
+	result.m[2][3] = 1;
+
+	result.m[3][0] = 0;
+	result.m[3][1] = 0;
+	result.m[3][2] = (-znear * zfar) / (zfar - znear);
+	result.m[3][3] = 0;
+
+	return result;
+}
 
 //ビューポート変換行列を求める関数
-Matrix3x3 ViewportMatrix(Vec2 size, Vec2 LeftTop) {
+Matrix3x3 ViewportMatrix(const Vec2& size, const Vec2& LeftTop) {
 
 	Matrix3x3 result;
 
@@ -1075,7 +1133,35 @@ Matrix3x3 ViewportMatrix(Vec2 size, Vec2 LeftTop) {
 	result.m[2][2] = 1;
 
 	return result;
-};
+}
+
+Matrix4x4 ViewportMatrix(const Vec2& size, const Vec2& LeftTop, float minDepth, float maxDepth) {
+
+	Matrix4x4 result;
+
+	result.m[0][0] = size.x * 0.5f;
+	result.m[0][1] = 0;
+	result.m[0][2] = 0;
+	result.m[0][3] = 0;
+
+	result.m[1][0] = 0;
+	result.m[1][1] = -(size.y * 0.5f);
+	result.m[1][2] = 0;
+	result.m[1][3] = 0;
+
+	result.m[2][0] = 0;
+	result.m[2][1] = 0;
+	result.m[2][2] = maxDepth - minDepth;
+	result.m[2][3] = 0;
+
+	result.m[3][0] = LeftTop.x + (size.x * 0.5f);
+	result.m[3][1] = LeftTop.y + (size.y * 0.5f);
+	result.m[3][2] = minDepth;
+	result.m[3][3] = 1;
+
+	return result;
+}
+;
 
 
 //レンダリングパイプライン作る関数

@@ -154,9 +154,15 @@ Matrix4x4 Transpose(const Matrix4x4& matrix);
 
 //正射影行列を求める関数
 Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
+Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom,float znear,float zfar);
+
+// 透視投影行列(視錐台)を求める関数
+float AspectRatio(float windowWidth, float windowHeight);
+Matrix4x4 PerspectiveMatrix(float fovY,float aspectRatio,float znear,float zfar);
 
 //ビューポート変換行列を求める関数
-Matrix3x3 ViewportMatrix(Vec2 size, Vec2 LeftTop);
+Matrix3x3 ViewportMatrix(const Vec2& size, const Vec2& LeftTop);
+Matrix4x4 ViewportMatrix(const Vec2& size, const Vec2& LeftTop,float minDepth,float maxDepth);
 
 //レンダリングパイプライン作る関数
 Matrix3x3 WvpVpMatrix(

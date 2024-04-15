@@ -13,9 +13,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Vec3 scale(1.2f, 0.79f,-2.1f);
-	Vec3 rotate(0.4f, 1.43f, -0.8f);
-	Vec3 translate(2.7f, -4.15f, 1.57f);
+	Matrix4x4 orthoMatrix = OrthoMatrix(-160.0f, 200.0f, 160.0f, 300.0f, 0.0f,1000.0f);
+	Matrix4x4 perspectiveMatrix = PerspectiveMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
+	Matrix4x4 viewportMatrix = ViewportMatrix({ 600.0f,300.0f }, { 100.0f,200.0f }, 0.0f, 1.0f);
+	const int kRowHeight = 120;
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -38,7 +40,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, AffineMatrix(scale,rotate,translate), "worldMatrix");
+		MatrixScreenPrintf(0, 0, orthoMatrix, "orthoMatrix");
+		MatrixScreenPrintf(0, kRowHeight, perspectiveMatrix, "perspectiveMatrix");
+		MatrixScreenPrintf(0, kRowHeight * 2, viewportMatrix, "viewportMatrix");
 
 		///
 		/// ↑描画処理ここまで
