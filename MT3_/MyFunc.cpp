@@ -185,6 +185,15 @@ float Cross(Vec2 pos1, Vec2 pos2, Vec2 targetPos) {
 	return ((lineVector.x * forTarget.y) - (lineVector.y * forTarget.x)) / lineLength;
 }
 
+// 2つのベクトルに垂直なベクトルを返す
+Vec3 Cross(Vec3 v1, Vec3 v2) {
+	return Vec3(
+		v1.y * v2.z - v1.z * v2.y, 
+		v1.z * v2.x - v1.x * v2.z,
+		v1.x * v2.y - v1.y * v2.x
+	);
+}
+
 // ベクトルの交点を求める関数
 Vec2 CrossPos(Vec2 line1Pos1, Vec2 line1Pos2, Vec2 line2Pos1, Vec2 line2Pos2) {
 	float s1 =

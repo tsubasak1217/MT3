@@ -13,10 +13,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Matrix4x4 orthoMatrix = OrthoMatrix(-160.0f, 200.0f, 160.0f, 300.0f, 0.0f,1000.0f);
+	struct Triangle {
+
+		Vec3 rotate_ = { 0.0f,0.0f,0.0f };
+		Vec3 translate_ = { 0.0f,0.0f,10.0f };
+		Matrix4x4 worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, rotate_, translate_);
+		float moveSpeed_ = 2.0f;
+
+		Vec3 localVertexes_[3] = {
+			{ 0.0f,  0.5f, 0.0f},
+			{ 0.5f, -0.5f, 0.0f},
+			{-0.5f, -0.5f, 0.0f}
+		};
+	};
+
+	struct Camera {
+		Vec3 translate_ = { 0.0f,0.0f,0.0f };
+		Matrix4x4 worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, translate_);
+	};
+
+
+	Vec3 v1(1.2f, -3.9f, 2.5f);
+	Vec3 v2(2.8f, 0.4f, -1.3f);
+	Vec3 cross = Cross(v1, v2);
+
+	Triangle triangle;
+	Camera camera;
+
+	Matrix4x4 viewMatrix = InverseMatrix(camera.worldMatrix_);
 	Matrix4x4 perspectiveMatrix = PerspectiveMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
-	Matrix4x4 viewportMatrix = ViewportMatrix({ 600.0f,300.0f }, { 100.0f,200.0f }, 0.0f, 1.0f);
-	const int kRowHeight = 120;
+	Matrix4x4 viewportMatrix = ViewportMatrix({ 1280,720 }, { 0.0f,0.0f }, 0.0f, 1000.0f);
+	Matrix4x4 wvpVpMatrix;
+
 
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -32,6 +60,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		triangle.rotate_ += 0.03f;
+
+		if (keys[DIK_A]) { triangle.translate_.x -= triangle.moveSpeed_; };
+		if (keys[DIK_D]) { triangle.translate_.x += triangle.moveSpeed_; };
+		if (keys[DIK_W]) { triangle.translate_.z += triangle.moveSpeed_; };
+		if (keys[DIK_S]) { triangle.translate_.z -= triangle.moveSpeed_; };
+
+		triangle.worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, triangle.rotate_, triangle.translate_);
+		camera.worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, camera.translate_);
+
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -40,9 +79,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		MatrixScreenPrintf(0, 0, orthoMatrix, "orthoMatrix");
-		MatrixScreenPrintf(0, kRowHeight, perspectiveMatrix, "perspectiveMatrix");
-		MatrixScreenPrintf(0, kRowHeight * 2, viewportMatrix, "viewportMatrix");
+		VecScreenPrintf(5, 5, cross, ":Cross");
 
 		///
 		/// ↑描画処理ここまで
