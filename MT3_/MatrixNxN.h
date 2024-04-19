@@ -88,4 +88,12 @@ struct Matrix4x4 final {
 		m[3][0] = da; m[3][1] = db; m[3][2] = dc; m[3][3] = dd;
 	}
 
+
+	void operator=(const Matrix4x4& mat) {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				m[i][j] = mat.m[i][j];
+			}
+		}
+	}
 };

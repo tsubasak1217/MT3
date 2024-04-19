@@ -1085,7 +1085,7 @@ Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float zn
 }
 
 float AspectRatio(float windowWidth, float windowHeight) {
-	return windowHeight / windowWidth;
+	return windowWidth / windowHeight;
 }
 
 Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar) {
