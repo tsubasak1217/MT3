@@ -18,12 +18,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Vec3 rotate_ = { 0.0f,0.0f,0.0f };
 		Vec3 translate_ = { 0.0f,0.0f,10.0f };
 		Matrix4x4 worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, rotate_, translate_);
-		float moveSpeed_ = 2.0f;
+		float moveSpeed_ = 0.20f;
+		float radius = 0.5f;
 
 		Vec3 localVertexes_[3] = {
-			{ 0.0f,  0.5f, 0.0f},
-			{ 0.5f, -0.5f, 0.0f},
-			{-0.5f, -0.5f, 0.0f}
+			{ 0.0f,  radius, 0.0f},
+			{ radius, -radius, 0.0f},
+			{-radius, -radius, 0.0f}
 		};
 	};
 
@@ -32,20 +33,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, translate_);
 	};
 
-
 	Vec3 v1(1.2f, -3.9f, 2.5f);
 	Vec3 v2(2.8f, 0.4f, -1.3f);
-	Vec3 cross = Cross(v1, v2);
+	Vec3 debugCross = Cross(v1, v2);
 
 	Triangle triangle;
 	Camera camera;
 
 	Matrix4x4 viewMatrix = InverseMatrix(camera.worldMatrix_);
-	Matrix4x4 perspectiveMatrix = PerspectiveMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
-	Matrix4x4 viewportMatrix = ViewportMatrix({ 1280,720 }, { 0.0f,0.0f }, 0.0f, 1000.0f);
+	float zNear = 0.1f;
+	float zFar = 100.0f;
+	Matrix4x4 perspectiveMatrix = PerspectiveMatrix(0.45f, AspectRatio(1280.0f,720.0f), zNear, zFar);
+	Matrix4x4 viewportMatrix = ViewportMatrix({ 1280,720 }, { 0.0f,0.0f }, 0.0f, zFar);
 	Matrix4x4 wvpVpMatrix;
 
-
+	Vec3 cross;
+	float dot;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -60,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		triangle.rotate_ += 0.03f;
+		triangle.rotate_.y += 0.03f;
 
 		if (keys[DIK_A]) { triangle.translate_.x -= triangle.moveSpeed_; };
 		if (keys[DIK_D]) { triangle.translate_.x += triangle.moveSpeed_; };
@@ -69,7 +72,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		triangle.worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, triangle.rotate_, triangle.translate_);
 		camera.worldMatrix_ = AffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, camera.translate_);
+		wvpVpMatrix =
+			Multiply(
+				Multiply(triangle.worldMatrix_, viewMatrix),
+				Multiply(perspectiveMatrix, viewportMatrix)
+			);
 
+		Vec3 vertexes[3];
+		vertexes[0] = Multiply(triangle.localVertexes_[0], wvpVpMatrix);
+		vertexes[1] = Multiply(triangle.localVertexes_[1], wvpVpMatrix);
+		vertexes[2] = Multiply(triangle.localVertexes_[2], wvpVpMatrix);
+
+		cross = Cross(vertexes[1] - vertexes[0], vertexes[2] - vertexes[1]);
+		dot = Dot({ 0.0f,0.0f,1.0f }, cross);
 
 		///
 		/// ↑更新処理ここまで
@@ -79,7 +94,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		VecScreenPrintf(5, 5, cross, ":Cross");
+		if (triangle.translate_.z >= zNear + triangle.radius) {
+			if (dot < 0.0f) {
+				Novice::DrawTriangle(
+					int(vertexes[0].x), int(vertexes[0].y),
+					int(vertexes[1].x), int(vertexes[1].y),
+					int(vertexes[2].x), int(vertexes[2].y),
+					0xff0000ff,
+					kFillModeSolid
+				);
+			}
+		}
+
+		VecScreenPrintf(5, 5, debugCross, ":Cross");
+		VecScreenPrintf(5, 25, triangle.translate_, ":TrianglePos");
 
 		///
 		/// ↑描画処理ここまで
