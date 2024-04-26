@@ -6,8 +6,6 @@
 
 const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_01_00";
 
-std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
-RenderMatrixes renderMat(camera.get());
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -18,9 +16,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
+	
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
+	RenderMatrixes renderMat(camera.get());
 
 	// ウィンドウの×ボタンが押されるまでループ
-	while (Novice::ProcessMessage() == 0) {
+	while(Novice::ProcessMessage() == 0) {
 		// フレームの開始
 		Novice::BeginFrame();
 
@@ -58,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::EndFrame();
 
 		// ESCキーが押されたらループを抜ける
-		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
+		if(preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
 			break;
 		}
 	}

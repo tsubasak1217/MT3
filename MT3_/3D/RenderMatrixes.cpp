@@ -8,7 +8,7 @@ RenderMatrixes::~RenderMatrixes() {
 }
 
 void RenderMatrixes::Init(Camera* cameraPtr) {
-	cameraPtr_.reset(cameraPtr);
+	cameraPtr_ = cameraPtr;
 	viewMatrix = InverseMatrix(cameraPtr_->worldMatrix_);
 	zNear = 0.1f;
 	zFar = 100.0f;

@@ -11,7 +11,7 @@ public:
 	void Fin();
 
 private:
-	std::unique_ptr<Camera> cameraPtr_ = nullptr;
+	Camera* cameraPtr_ = nullptr;
 	Matrix4x4 viewMatrix;
 	float zNear;
 	float zFar;
@@ -21,7 +21,7 @@ private:
 	Matrix4x4 wvpVpMatrix;
 
 public:
-	void SetCameraPtr(Camera* cameraPtr) { cameraPtr_.reset(cameraPtr); }
+	void SetCameraPtr(Camera* cameraPtr) { cameraPtr_ = cameraPtr; }
 	Matrix4x4 GetViewProjectionMat()const{return viewProjectionMatrix;}
 	Matrix4x4 GetViewportMat()const { return viewportMatrix; }
 };
