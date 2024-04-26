@@ -4,6 +4,7 @@
 #include <cmath>
 #include <stdio.h>
 #include <time.h>
+#include <memory>
 #include <Novice.h>
 #include <assert.h>
 #include <fstream>
@@ -65,7 +66,11 @@ float Cross(
 );
 
 float Cross(Vec2 pos1, Vec2 pos2, Vec2 targetPos);
-Vec3 Cross(Vec3 v1, Vec3 v2);
+enum VIEWMODE {
+	kScreen,
+	kWorld
+};
+Vec3 Cross(Vec3 v1, Vec3 v2,bool kViewMode);
 
 
 //線と線の交点を求める関数
