@@ -35,7 +35,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Vec3 v1(1.2f, -3.9f, 2.5f);
 	Vec3 v2(2.8f, 0.4f, -1.3f);
-	Vec3 debugCross = Cross(v1, v2);
+	Vec3 debugCross = Cross(v1, v2, kScreen);
 
 	Triangle triangle;
 	Camera camera;
@@ -43,7 +43,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Matrix4x4 viewMatrix = InverseMatrix(camera.worldMatrix_);
 	float zNear = 0.1f;
 	float zFar = 100.0f;
-	Matrix4x4 perspectiveMatrix = PerspectiveMatrix(0.45f, AspectRatio(1280.0f,720.0f), zNear, zFar);
+	Matrix4x4 perspectiveMatrix = PerspectiveMatrix(0.45f, AspectRatio(1280.0f, 720.0f), zNear, zFar);
 	Matrix4x4 viewportMatrix = ViewportMatrix({ 1280,720 }, { 0.0f,0.0f }, 0.0f, zFar);
 	Matrix4x4 wvpVpMatrix;
 
@@ -78,12 +78,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Multiply(perspectiveMatrix, viewportMatrix)
 			);
 
-		Vec3 vertexes[3];
-		vertexes[0] = Multiply(triangle.localVertexes_[0], wvpVpMatrix);
-		vertexes[1] = Multiply(triangle.localVertexes_[1], wvpVpMatrix);
-		vertexes[2] = Multiply(triangle.localVertexes_[2], wvpVpMatrix);
+		Vec3 screenVertexes[3];
+		screenVertexes[0] = Multiply(triangle.localVertexes_[0], wvpVpMatrix);
+		screenVertexes[1] = Multiply(triangle.localVertexes_[1], wvpVpMatrix);
+		screenVertexes[2] = Multiply(triangle.localVertexes_[2], wvpVpMatrix);
 
-		cross = Cross(vertexes[1] - vertexes[0], vertexes[2] - vertexes[1]);
+		cross = Cross(
+			screenVertexes[1] - screenVertexes[0],
+			screenVertexes[2] - screenVertexes[1],
+			kScreen
+		);
 		dot = Dot({ 0.0f,0.0f,1.0f }, cross);
 
 		///
@@ -97,9 +101,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (triangle.translate_.z >= zNear + triangle.radius) {
 			if (dot < 0.0f) {
 				Novice::DrawTriangle(
-					int(vertexes[0].x), int(vertexes[0].y),
-					int(vertexes[1].x), int(vertexes[1].y),
-					int(vertexes[2].x), int(vertexes[2].y),
+					int(screenVertexes[0].x), int(screenVertexes[0].y),
+					int(screenVertexes[1].x), int(screenVertexes[1].y),
+					int(screenVertexes[2].x), int(screenVertexes[2].y),
 					0xff0000ff,
 					kFillModeSolid
 				);
@@ -108,6 +112,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		VecScreenPrintf(5, 5, debugCross, ":Cross");
 		VecScreenPrintf(5, 25, triangle.translate_, ":TrianglePos");
+		Novice::ScreenPrintf(5, 45, "%f:dot", dot);
 
 		///
 		/// ↑描画処理ここまで

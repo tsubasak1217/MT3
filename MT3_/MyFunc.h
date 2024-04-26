@@ -65,7 +65,11 @@ float Cross(
 );
 
 float Cross(Vec2 pos1, Vec2 pos2, Vec2 targetPos);
-Vec3 Cross(Vec3 v1, Vec3 v2);
+enum VIEWMODE {
+	kScreen,
+	kWorld
+};
+Vec3 Cross(Vec3 v1, Vec3 v2, bool kViewMode);
 
 
 //線と線の交点を求める関数
@@ -128,7 +132,7 @@ Matrix4x4 IdentityMat4();
 // 拡大縮小行列を作る関数
 Matrix3x3 ScaleMatrix(float scaleX, float scaleY);
 Matrix3x3 ScaleMatrix(const Vec2& scale);
-Matrix4x4 ScaleMatrix(float scaleX, float scaleY,float scaleZ);
+Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ);
 Matrix4x4 ScaleMatrix(const Vec3& scale);
 
 // 回転行列を作る関数
@@ -157,15 +161,15 @@ Matrix4x4 Transpose(const Matrix4x4& matrix);
 
 //正射影行列を求める関数
 Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
-Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom,float znear,float zfar);
+Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar);
 
 // 透視投影行列(視錐台)を求める関数
 float AspectRatio(float windowWidth, float windowHeight);
-Matrix4x4 PerspectiveMatrix(float fovY,float aspectRatio,float znear,float zfar);
+Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar);
 
 //ビューポート変換行列を求める関数
 Matrix3x3 ViewportMatrix(const Vec2& size, const Vec2& LeftTop);
-Matrix4x4 ViewportMatrix(const Vec2& size, const Vec2& LeftTop,float minDepth,float maxDepth);
+Matrix4x4 ViewportMatrix(const Vec2& size, const Vec2& LeftTop, float minDepth, float maxDepth);
 
 //レンダリングパイプライン作る関数
 Matrix3x3 WvpVpMatrix(
