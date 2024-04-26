@@ -134,6 +134,9 @@ Matrix4x4 ScaleMatrix(const Vec3& scale);
 // 回転行列を作る関数
 Matrix3x3 RotateMatrix(float theta);
 Matrix4x4 RotateMatrix(const Vec3& rotate);
+Matrix4x4 RotateMatX(const Vec3& rotate);
+Matrix4x4 RotateMatY(const Vec3& rotate);
+Matrix4x4 RotateMatZ(const Vec3& rotate);
 
 // 平行移動行列を作る関数
 Matrix3x3 TranslateMatrix(float tx, float ty);
@@ -208,6 +211,8 @@ namespace My {
 	//中心座標基準三角
 	void DrawTriangle(Vec2 center, float radius, float theta, int color);
 	void DrawTriangleWire(Vec2 center, float radius, float theta, int color);
+	//線
+	void DrawLine(const Vec2& pos1, const Vec2& pos2,int color);
 	//星
 	void DrawStar(Vec2 center, float radius, Vec2 scale, float theta, int color);
 	void DrawStarWire(Vec2 center, float radius, Vec2 scale, float theta, int color);
@@ -216,6 +221,8 @@ namespace My {
 	//雪を描く関数
 	void DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel);
 }
+
+void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix);
 
 //================================================================
 //                     色を扱う関数

@@ -188,7 +188,7 @@ float Cross(Vec2 pos1, Vec2 pos2, Vec2 targetPos) {
 // 2つのベクトルに垂直なベクトルを返す
 Vec3 Cross(Vec3 v1, Vec3 v2) {
 	return Vec3(
-		v1.y * v2.z - v1.z * v2.y, 
+		v1.y * v2.z - v1.z * v2.y,
 		v1.z * v2.x - v1.x * v2.z,
 		v1.x * v2.y - v1.y * v2.x
 	);
@@ -708,93 +708,164 @@ Matrix4x4 RotateMatrix(const Vec3& rotate) {
 	Matrix4x4 rotateMat[3];
 
 	/*-------X軸の回転行列-------*/
-	if (rotate.x) {
 
-		float sin = std::sin(rotate.x);
-		float cos = std::cos(rotate.x);
+	float sin = std::sin(rotate.x);
+	float cos = std::cos(rotate.x);
 
-		rotateMat[0].m[0][0] = 1;
-		rotateMat[0].m[1][0] = 0;
-		rotateMat[0].m[2][0] = 0;
-		rotateMat[0].m[3][0] = 0;
+	rotateMat[0].m[0][0] = 1;
+	rotateMat[0].m[1][0] = 0;
+	rotateMat[0].m[2][0] = 0;
+	rotateMat[0].m[3][0] = 0;
 
-		rotateMat[0].m[0][1] = 0;
-		rotateMat[0].m[1][1] = cos;
-		rotateMat[0].m[2][1] = -sin;
-		rotateMat[0].m[3][1] = 0;
+	rotateMat[0].m[0][1] = 0;
+	rotateMat[0].m[1][1] = cos;
+	rotateMat[0].m[2][1] = -sin;
+	rotateMat[0].m[3][1] = 0;
 
-		rotateMat[0].m[0][2] = 0;
-		rotateMat[0].m[1][2] = sin;
-		rotateMat[0].m[2][2] = cos;
-		rotateMat[0].m[3][2] = 0;
+	rotateMat[0].m[0][2] = 0;
+	rotateMat[0].m[1][2] = sin;
+	rotateMat[0].m[2][2] = cos;
+	rotateMat[0].m[3][2] = 0;
 
-		rotateMat[0].m[0][3] = 0;
-		rotateMat[0].m[1][3] = 0;
-		rotateMat[0].m[2][3] = 0;
-		rotateMat[0].m[3][3] = 1;
-	} else {
-		rotateMat[0] = IdentityMat4();
-	}
+	rotateMat[0].m[0][3] = 0;
+	rotateMat[0].m[1][3] = 0;
+	rotateMat[0].m[2][3] = 0;
+	rotateMat[0].m[3][3] = 1;
 
 	/*-------Y軸の回転行列-------*/
-	if (rotate.y) {
+	sin = std::sin(rotate.y);
+	cos = std::cos(rotate.y);
 
-		float sin = std::sin(rotate.y);
-		float cos = std::cos(rotate.y);
+	rotateMat[1].m[0][0] = cos;
+	rotateMat[1].m[1][0] = 0;
+	rotateMat[1].m[2][0] = sin;
+	rotateMat[1].m[3][0] = 0;
 
-		rotateMat[1].m[0][0] = cos;
-		rotateMat[1].m[1][0] = 0;
-		rotateMat[1].m[2][0] = sin;
-		rotateMat[1].m[3][0] = 0;
+	rotateMat[1].m[0][1] = 0;
+	rotateMat[1].m[1][1] = 1;
+	rotateMat[1].m[2][1] = 0;
+	rotateMat[1].m[3][1] = 0;
 
-		rotateMat[1].m[0][1] = 0;
-		rotateMat[1].m[1][1] = 1;
-		rotateMat[1].m[2][1] = 0;
-		rotateMat[1].m[3][1] = 0;
+	rotateMat[1].m[0][2] = -sin;
+	rotateMat[1].m[1][2] = 0;
+	rotateMat[1].m[2][2] = cos;
+	rotateMat[1].m[3][2] = 0;
 
-		rotateMat[1].m[0][2] = -sin;
-		rotateMat[1].m[1][2] = 0;
-		rotateMat[1].m[2][2] = cos;
-		rotateMat[1].m[3][2] = 0;
-
-		rotateMat[1].m[0][3] = 0;
-		rotateMat[1].m[1][3] = 0;
-		rotateMat[1].m[2][3] = 0;
-		rotateMat[1].m[3][3] = 1;
-	} else {
-		rotateMat[1] = IdentityMat4();
-	}
+	rotateMat[1].m[0][3] = 0;
+	rotateMat[1].m[1][3] = 0;
+	rotateMat[1].m[2][3] = 0;
+	rotateMat[1].m[3][3] = 1;
 
 	/*-------Z軸の回転行列-------*/
-	if (rotate.z) {
 
-		float sin = std::sin(rotate.z);
-		float cos = std::cos(rotate.z);
+	sin = std::sin(rotate.z);
+	cos = std::cos(rotate.z);
 
-		rotateMat[2].m[0][0] = cos;
-		rotateMat[2].m[1][0] = -sin;
-		rotateMat[2].m[2][0] = 0;
-		rotateMat[2].m[3][0] = 0;
+	rotateMat[2].m[0][0] = cos;
+	rotateMat[2].m[1][0] = -sin;
+	rotateMat[2].m[2][0] = 0;
+	rotateMat[2].m[3][0] = 0;
 
-		rotateMat[2].m[0][1] = sin;
-		rotateMat[2].m[1][1] = cos;
-		rotateMat[2].m[2][1] = 0;
-		rotateMat[2].m[3][1] = 0;
+	rotateMat[2].m[0][1] = sin;
+	rotateMat[2].m[1][1] = cos;
+	rotateMat[2].m[2][1] = 0;
+	rotateMat[2].m[3][1] = 0;
 
-		rotateMat[2].m[0][2] = 0;
-		rotateMat[2].m[1][2] = 0;
-		rotateMat[2].m[2][2] = 1;
-		rotateMat[2].m[3][2] = 0;
+	rotateMat[2].m[0][2] = 0;
+	rotateMat[2].m[1][2] = 0;
+	rotateMat[2].m[2][2] = 1;
+	rotateMat[2].m[3][2] = 0;
 
-		rotateMat[2].m[0][3] = 0;
-		rotateMat[2].m[1][3] = 0;
-		rotateMat[2].m[2][3] = 0;
-		rotateMat[2].m[3][3] = 1;
-	} else {
-		rotateMat[2] = IdentityMat4();
-	}
+	rotateMat[2].m[0][3] = 0;
+	rotateMat[2].m[1][3] = 0;
+	rotateMat[2].m[2][3] = 0;
+	rotateMat[2].m[3][3] = 1;
 
 	return Multiply(rotateMat[0], Multiply(rotateMat[1], rotateMat[2]));
+}
+
+Matrix4x4 RotateMatX(const Vec3& rotate) {
+	Matrix4x4 rotateMat;
+	float sin = std::sin(rotate.x);
+	float cos = std::cos(rotate.x);
+
+	rotateMat.m[0][0] = 1;
+	rotateMat.m[1][0] = 0;
+	rotateMat.m[2][0] = 0;
+	rotateMat.m[3][0] = 0;
+
+	rotateMat.m[0][1] = 0;
+	rotateMat.m[1][1] = cos;
+	rotateMat.m[2][1] = -sin;
+	rotateMat.m[3][1] = 0;
+
+	rotateMat.m[0][2] = 0;
+	rotateMat.m[1][2] = sin;
+	rotateMat.m[2][2] = cos;
+	rotateMat.m[3][2] = 0;
+
+	rotateMat.m[0][3] = 0;
+	rotateMat.m[1][3] = 0;
+	rotateMat.m[2][3] = 0;
+	rotateMat.m[3][3] = 1;
+
+	return rotateMat;
+}
+
+Matrix4x4 RotateMatY(const Vec3& rotate) {
+	Matrix4x4 rotateMat;
+	float sin = std::sin(rotate.y);
+	float cos = std::cos(rotate.y);
+
+	rotateMat.m[0][0] = cos;
+	rotateMat.m[1][0] = 0;
+	rotateMat.m[2][0] = sin;
+	rotateMat.m[3][0] = 0;
+
+	rotateMat.m[0][1] = 0;
+	rotateMat.m[1][1] = 1;
+	rotateMat.m[2][1] = 0;
+	rotateMat.m[3][1] = 0;
+
+	rotateMat.m[0][2] = -sin;
+	rotateMat.m[1][2] = 0;
+	rotateMat.m[2][2] = cos;
+	rotateMat.m[3][2] = 0;
+
+	rotateMat.m[0][3] = 0;
+	rotateMat.m[1][3] = 0;
+	rotateMat.m[2][3] = 0;
+	rotateMat.m[3][3] = 1;
+
+	return rotateMat;
+}
+
+Matrix4x4 RotateMatZ(const Vec3& rotate) {
+	Matrix4x4 rotateMat;
+	float sin = std::sin(rotate.z);
+	float cos = std::cos(rotate.z);
+
+	rotateMat.m[0][0] = cos;
+	rotateMat.m[1][0] = -sin;
+	rotateMat.m[2][0] = 0;
+	rotateMat.m[3][0] = 0;
+
+	rotateMat.m[0][1] = sin;
+	rotateMat.m[1][1] = cos;
+	rotateMat.m[2][1] = 0;
+	rotateMat.m[3][1] = 0;
+
+	rotateMat.m[0][2] = 0;
+	rotateMat.m[1][2] = 0;
+	rotateMat.m[2][2] = 1;
+	rotateMat.m[3][2] = 0;
+
+	rotateMat.m[0][3] = 0;
+	rotateMat.m[1][3] = 0;
+	rotateMat.m[2][3] = 0;
+	rotateMat.m[3][3] = 1;
+
+	return rotateMat;
 }
 
 /*------------------------- 平行移動行列を作る関数 --------------------------*/
@@ -854,9 +925,11 @@ Matrix3x3 AffineMatrix(Vec2 scale, float rotateTheta, Vec2 translate) {
 
 Matrix4x4 AffineMatrix(const Vec3& scale, const Vec3& rotate, const Vec3& translate) {
 	Matrix4x4 matrix(Multiply(ScaleMatrix(scale), RotateMatrix(rotate)));
+
 	matrix.m[3][0] = translate.x;
 	matrix.m[3][1] = translate.y;
 	matrix.m[3][2] = translate.z;
+
 	return matrix;
 }
 
@@ -1626,7 +1699,16 @@ void My::DrawTriangleWire(Vec2 center, float radius, float theta, int color) {
 		color
 	);
 
-};
+}
+void My::DrawLine(const Vec2& pos1, const Vec2& pos2, int color) {
+	Novice::DrawLine(
+		int(pos1.x),
+		int(pos1.y),
+		int(pos2.x),
+		int(pos2.y),
+		color
+	);
+}
 
 // 中心点から星を描く関数
 /// <summary>
@@ -2039,6 +2121,69 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 	}
 }
 
+
+// グリッドを描画する関数
+void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix) {
+
+	const float kGridHalfWidth = 2.0f;
+	const int kGridSubdivision = 10;
+	const float kGridEvery = (kGridHalfWidth * 2.0f) / kGridSubdivision;
+	Matrix4x4 wvpVpMatrix = Multiply(viewPjojectionMatrix, viewportMatrix);
+
+	for (int xIndex = 0; xIndex <= kGridSubdivision; xIndex++) {
+		Vec3 point[2];
+		point[0] = { kGridHalfWidth - kGridEvery * xIndex,0.0f,kGridHalfWidth };
+		point[1] = { kGridHalfWidth - kGridEvery * xIndex,0.0f,-kGridHalfWidth };
+
+		point[0] = Multiply(point[0], wvpVpMatrix);
+		point[1] = Multiply(point[1], wvpVpMatrix);
+
+		if (xIndex != kGridSubdivision / 2) {
+			Novice::DrawLine(
+				int(point[0].x),
+				int(point[0].y),
+				int(point[1].x),
+				int(point[1].y),
+				0xaaaaaaff
+			);
+		} else {
+			Novice::DrawLine(
+				int(point[0].x),
+				int(point[0].y),
+				int(point[1].x),
+				int(point[1].y),
+				0x000000ff
+			);
+		}
+	}
+
+	for (int zIndex = 0; zIndex <= kGridSubdivision; zIndex++) {
+		Vec3 point[2];
+		point[0] = { kGridHalfWidth,0.0f,kGridHalfWidth - kGridEvery * zIndex };
+		point[1] = { -kGridHalfWidth,0.0f,kGridHalfWidth - kGridEvery * zIndex };
+
+		point[0] = Multiply(point[0], wvpVpMatrix);
+		point[1] = Multiply(point[1], wvpVpMatrix);
+
+		if (zIndex != kGridSubdivision / 2) {
+			Novice::DrawLine(
+				int(point[0].x),
+				int(point[0].y),
+				int(point[1].x),
+				int(point[1].y),
+				0xaaaaaaff
+			);
+		} else {
+			Novice::DrawLine(
+				int(point[0].x),
+				int(point[0].y),
+				int(point[1].x),
+				int(point[1].y),
+				0x000000ff
+			);
+		}
+	}
+}
 
 //================================================================
 //                     色を扱う関数

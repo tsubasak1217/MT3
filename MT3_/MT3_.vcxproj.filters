@@ -14,6 +14,18 @@
     <Filter Include="KamataEngine\Adapter">
       <UniqueIdentifier>{c6468eb4-788b-4a83-b207-a5f4804e56c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{f9720e12-d566-413e-8526-bf011bdffe8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{2baa4769-2216-4f67-92c3-a2e31e6c0ddc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\Math">
+      <UniqueIdentifier>{3d4d6893-2b63-45f8-ad59-764c949259bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib\Tensor">
+      <UniqueIdentifier>{91e8f39b-c79d-4ed0-baf0-63b61d7ec0e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.cpp">
@@ -35,11 +47,14 @@
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Easing.cpp">
-      <Filter>KamataEngine</Filter>
+    <ClCompile Include="Lib\Math\Easing.cpp">
+      <Filter>Lib\Math</Filter>
     </ClCompile>
-    <ClCompile Include="MyFunc.cpp">
-      <Filter>KamataEngine</Filter>
+    <ClCompile Include="Lib\Math\MyFunc.cpp">
+      <Filter>Lib\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\Camera.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +122,20 @@
       <Filter>KamataEngine\Include</Filter>
     </ClInclude>
     <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h" />
-    <ClInclude Include="Easing.h" />
-    <ClInclude Include="MatrixNxN.h" />
-    <ClInclude Include="MyFunc.h" />
-    <ClInclude Include="VectorN.h" />
+    <ClInclude Include="Lib\Math\Easing.h">
+      <Filter>Lib\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Math\MyFunc.h">
+      <Filter>Lib\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Tensor\MatrixNxN.h">
+      <Filter>Lib\Tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Tensor\VectorN.h">
+      <Filter>Lib\Tensor</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\Camera.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
