@@ -26,6 +26,9 @@
     <Filter Include="Lib\Tensor">
       <UniqueIdentifier>{91e8f39b-c79d-4ed0-baf0-63b61d7ec0e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3D">
+      <UniqueIdentifier>{7203124a-1c29-47f6-843d-d95e01d1bbfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.cpp">
@@ -53,8 +56,11 @@
     <ClCompile Include="Lib\Math\MyFunc.cpp">
       <Filter>Lib\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Camera.cpp">
-      <Filter>Object</Filter>
+    <ClCompile Include="3D\Camera.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\RenderMatrixes.cpp">
+      <Filter>3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,8 +140,11 @@
     <ClInclude Include="Lib\Tensor\VectorN.h">
       <Filter>Lib\Tensor</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Camera.h">
-      <Filter>Object</Filter>
+    <ClInclude Include="3D\Camera.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\RenderMatrixes.h">
+      <Filter>3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
