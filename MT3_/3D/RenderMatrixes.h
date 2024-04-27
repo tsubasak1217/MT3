@@ -24,4 +24,6 @@ public:
 	void SetCameraPtr(Camera* cameraPtr) { cameraPtr_ = cameraPtr; }
 	Matrix4x4 GetViewProjectionMat()const{return viewProjectionMatrix;}
 	Matrix4x4 GetViewportMat()const { return viewportMatrix; }
+	Matrix4x4* GetViewProjectionMat(){ return &viewProjectionMatrix; }
+	Matrix4x4* GetViewportMat() { return &viewportMatrix; }
 };

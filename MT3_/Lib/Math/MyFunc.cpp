@@ -19,7 +19,7 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 	std::string line, value;
 
 	// ファイルから読み取った1行をlineに格納 (改行区切り)
-	while (std::getline(file, line)) {
+	while(std::getline(file, line)) {
 
 		// 一行ごとの最終結果を入れる配列
 		std::vector<int> row;
@@ -29,7 +29,7 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 
 		/*issLineからカンマ区切りでデータを読み込みvalueに格納
 		(行の値を1文字ずつに切り分ける)*/
-		while (std::getline(issLine, value, ',')) {
+		while(std::getline(issLine, value, ',')) {
 
 			// 切り分けた一文字を char → int型に変換
 			int intValue = atoi(value.c_str());
@@ -59,7 +59,7 @@ int FrameToClock(int count, int tranceMode) {
 		Hour
 	};
 
-	switch (tranceMode) {
+	switch(tranceMode) {
 	case Sec:
 		result = count / 60;
 		break;
@@ -113,7 +113,7 @@ Vec2 Normalize(const Vec2& pos1, const Vec2& pos2) {
 
 	Vec2 vec = pos2 - pos1;
 
-	if (float length = Length(vec)) {
+	if(float length = Length(vec)) {
 		return vec / length;
 	} else {
 		return { 0.0f,0.0f };
@@ -122,21 +122,21 @@ Vec2 Normalize(const Vec2& pos1, const Vec2& pos2) {
 Vec3 Normalize(const Vec3& pos1, const Vec3& pos2) {
 	Vec3 vec = pos2 - pos1;
 
-	if (float length = Length(vec)) {
+	if(float length = Length(vec)) {
 		return vec / length;
 	} else {
 		return { 0.0f,0.0f,0.0f };
 	}
 }
 Vec2 Normalize(const Vec2& vec) {
-	if (float length = Length(vec)) {
+	if(float length = Length(vec)) {
 		return vec / length;
 	} else {
 		return { 0.0f,0.0f };
 	}
 }
 Vec3 Normalize(const Vec3& vec) {
-	if (float length = Length(vec)) {
+	if(float length = Length(vec)) {
 		return vec / length;
 	} else {
 		return { 0.0f,0.0f,0.0f };
@@ -188,7 +188,7 @@ float Cross(Vec2 pos1, Vec2 pos2, Vec2 targetPos) {
 // 2つのベクトルに垂直なベクトルを返す
 Vec3 Cross(Vec3 v1, Vec3 v2, bool kViewMode) {
 
-	if (kViewMode == kScreen) {
+	if(kViewMode == kScreen) {
 		return Vec3(
 			-v1.y * v2.z - v1.z * -v2.y,
 			v1.z * v2.x - v1.x * v2.z,
@@ -232,7 +232,7 @@ Vec2 CrossPos2(Vec2 line1Pos1, Vec2 line1Pos2, Vec2 line2Pos1, Vec2 line2Pos2) {
 
 	Vec2 crossPos = { 0.0f,0.0f };
 
-	if (s1 != 0 && s2 != 0) {
+	if(s1 != 0 && s2 != 0) {
 		crossPos = {
 			line1Pos1.x + (line1Pos2.x - line1Pos1.x) * s1 / (s1 + s2),
 			line1Pos1.y + (line1Pos2.y - line1Pos1.y) * s1 / (s1 + s2)
@@ -293,8 +293,8 @@ Matrix2x2 Add(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
 	Matrix2x2 result;
 
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
 			result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
 		}
 	}
@@ -305,8 +305,8 @@ Matrix3x3 Add(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
 
 	Matrix3x3 result;
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < 3; j++) {
 			result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
 		}
 	}
@@ -318,8 +318,8 @@ Matrix4x4 Add(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 
 	Matrix4x4 result;
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 			result.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
 		}
 	}
@@ -332,8 +332,8 @@ Matrix2x2 Subtract(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
 	Matrix2x2 result;
 
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
 			result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
 		}
 	}
@@ -344,8 +344,8 @@ Matrix3x3 Subtract(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
 
 	Matrix3x3 result;
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < 3; j++) {
 			result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
 		}
 	}
@@ -357,8 +357,8 @@ Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 
 	Matrix4x4 result;
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 			result.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
 		}
 	}
@@ -370,8 +370,8 @@ Matrix4x4 Subtract(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 Matrix2x2 Devide(const Matrix2x2& matrix, float devideNum) {
 	Matrix2x2 result;
 
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
 			result.m[i][j] = matrix.m[i][j] / devideNum;
 		}
 	}
@@ -383,8 +383,8 @@ Matrix3x3 Devide(const Matrix3x3& matrix, float devideNum) {
 
 	Matrix3x3 result;
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < 3; j++) {
 			result.m[i][j] = matrix.m[i][j] / devideNum;
 		}
 	}
@@ -396,8 +396,8 @@ Matrix4x4 Devide(const Matrix4x4& matrix, float devideNum) {
 
 	Matrix4x4 result;
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 			result.m[i][j] = matrix.m[i][j] / devideNum;
 		}
 	}
@@ -453,8 +453,8 @@ Matrix2x2 Multiply(const Matrix2x2& matrix1, const Matrix2x2& matrix2) {
 
 	Matrix2x2 result;
 
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
 
 			result.m[i][j] =
 				(matrix1.m[i][0] * matrix2.m[0][j]) +
@@ -468,8 +468,8 @@ Matrix3x3 Multiply(const Matrix3x3& matrix1, const Matrix3x3& matrix2) {
 
 	Matrix3x3 result;
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < 3; j++) {
 
 			result.m[i][j] =
 				(matrix1.m[i][0] * matrix2.m[0][j]) +
@@ -485,8 +485,8 @@ Matrix4x4 Multiply(const Matrix4x4& matrix1, const Matrix4x4& matrix2) {
 
 	Matrix4x4 result;
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 
 			result.m[i][j] =
 				(matrix1.m[i][0] * matrix2.m[0][j]) +
@@ -509,8 +509,8 @@ Vec3 Multiply(const Vec3& vector, float scalar) {
 Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar) {
 
 	Matrix2x2 result;
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 2; j++) {
 			result.m[i][j] = matrix.m[i][j] * scalar;
 		}
 	}
@@ -520,8 +520,8 @@ Matrix2x2 Multiply(const Matrix2x2& matrix, float scalar) {
 Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar) {
 
 	Matrix3x3 result;
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < 3; j++) {
 			result.m[i][j] = matrix.m[i][j] * scalar;
 		}
 	}
@@ -531,8 +531,8 @@ Matrix3x3 Multiply(const Matrix3x3& matrix, float scalar) {
 Matrix4x4 Multiply(const Matrix4x4& matrix, float scalar) {
 
 	Matrix4x4 result;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 			result.m[i][j] = matrix.m[i][j] * scalar;
 		}
 	}
@@ -957,14 +957,14 @@ float Determinant3x3(const Matrix3x3& mat) {
 // 4x4 行列の行列式を計算する関数
 float Determinant4x4(const Matrix4x4& mat) {
 	float det = 0.0f;
-	for (int i = 0; i < 4; i++) {
+	for(int i = 0; i < 4; i++) {
 
 		Matrix3x3 minor;
 
-		for (int j = 0; j < 3; j++) {
+		for(int j = 0; j < 3; j++) {
 			int k = 0;
-			for (int l = 0; l < 4; l++) {
-				if (l != i) {
+			for(int l = 0; l < 4; l++) {
+				if(l != i) {
 					minor.m[j][k++] = mat.m[j + 1][l];
 				}
 			}
@@ -1026,8 +1026,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 	Matrix4x4 inv;
 	float sweep[4][8];
 
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 			// sweepの左側に逆行列を求める行列をセット
 			sweep[i][j] = matrix.m[i][j];
 
@@ -1037,7 +1037,7 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 	}
 
 	// 左半分が単位行列になるまで繰り返す (右半分に逆行列が求められる)
-	for (int col = 0; col < 4; col++) {
+	for(int col = 0; col < 4; col++) {
 
 		/*------------------------------------------------------*/
 		/*				       	ソート、除外						*/
@@ -1048,8 +1048,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 		int maxIdx = col;
 
 		// 今見ている対角成分より大きい絶対値を持つ要素がその列のその行より後にあるか探す
-		for (int row = col + 1; row < 4; row++) {
-			if (fabs(sweep[row][col]) > max) {
+		for(int row = col + 1; row < 4; row++) {
+			if(fabs(sweep[row][col]) > max) {
 				max = fabs(sweep[row][col]);
 				maxIdx = row;
 			}
@@ -1059,8 +1059,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 		assert(fabs(sweep[maxIdx][col]) > 0);
 
 		// 見つかった場合、その要素が見つかった行と今の行の要素を入れ替える
-		if (col != maxIdx) {
-			for (int col2 = 0; col2 < 8; col2++) {
+		if(col != maxIdx) {
+			for(int col2 = 0; col2 < 8; col2++) {
 				std::swap(sweep[maxIdx][col2], sweep[col][col2]);
 			}
 		}
@@ -1074,21 +1074,21 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 		// 対角成分 sweep[col][col]に掛けると1になる値を求める
 		float x = 1.0f / sweep[col][col];
 
-		for (int col2 = 0; col2 < 8; col2++) {
+		for(int col2 = 0; col2 < 8; col2++) {
 			// この計算でsweep[col][col]が1になる 
 			// (対角成分以外にもその行すべての要素に掛ける。)
 			sweep[col][col2] *= x;
 		}
 
 		/*------- 今見ている列の対角成分以外を0にする -------*/
-		for (int row = 0; row < 4; row++) {
+		for(int row = 0; row < 4; row++) {
 
-			if (row == col) { continue; }// 対角成分はそのまま
+			if(row == col) { continue; }// 対角成分はそのまま
 
 			// 対角成分のある行以外に掛ける値を求める
 			x = -sweep[row][col];
 
-			for (int col2 = 0; col2 < 8; col2++) {
+			for(int col2 = 0; col2 < 8; col2++) {
 				// 対角成分を1にした行をa倍して足していく
 				// すると対角成分以外のsweep[row][col]が0になる ( 自分に対して 1 x -自分 を足しているため。)
 				sweep[row][col2] += sweep[col][col2] * x;
@@ -1097,8 +1097,8 @@ Matrix4x4 InverseMatrix(const Matrix4x4& matrix) {
 	}
 
 	// sweepの右半分がmatrixの逆行列
-	for (int row = 0; row < 4; row++) {
-		for (int col = 0; col < 4; col++) {
+	for(int row = 0; row < 4; row++) {
+		for(int col = 0; col < 4; col++) {
 			inv.m[row][col] = sweep[row][4 + col];
 		}
 	}
@@ -1139,8 +1139,8 @@ Matrix3x3 Transpose(const Matrix3x3& matrix) {
 
 Matrix4x4 Transpose(const Matrix4x4& matrix) {
 	Matrix4x4 result;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 			result.m[i][j] = matrix.m[j][i];
 		}
 	}
@@ -1317,10 +1317,10 @@ Matrix3x3 WvpVpMatrix(
 
 void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char* string) {
 
-	if (string) { Novice::ScreenPrintf(posX, posY, string); }
+	if(string) { Novice::ScreenPrintf(posX, posY, string); }
 
-	for (int row = 0; row < 2; row++) {
-		for (int col = 0; col < 2; col++) {
+	for(int row = 0; row < 2; row++) {
+		for(int col = 0; col < 2; col++) {
 
 			Novice::ScreenPrintf(
 				posX + col * 64,
@@ -1334,10 +1334,10 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix2x2& matrix, const char*
 
 void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char* string) {
 
-	if (string) { Novice::ScreenPrintf(posX, posY, string); }
+	if(string) { Novice::ScreenPrintf(posX, posY, string); }
 
-	for (int row = 0; row < 3; row++) {
-		for (int col = 0; col < 3; col++) {
+	for(int row = 0; row < 3; row++) {
+		for(int col = 0; col < 3; col++) {
 
 			Novice::ScreenPrintf(
 				posX + col * 64,
@@ -1351,10 +1351,10 @@ void MatrixScreenPrintf(int posX, int posY, const Matrix3x3& matrix, const char*
 
 void MatrixScreenPrintf(int posX, int posY, const Matrix4x4& matrix, const char* string) {
 
-	if (string) { Novice::ScreenPrintf(posX, posY, string); }
+	if(string) { Novice::ScreenPrintf(posX, posY, string); }
 
-	for (int row = 0; row < 4; row++) {
-		for (int col = 0; col < 4; col++) {
+	for(int row = 0; row < 4; row++) {
+		for(int col = 0; col < 4; col++) {
 
 			Novice::ScreenPrintf(
 				posX + col * 64,
@@ -1389,9 +1389,9 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 	float distX = ballPos.x - boxCenter.x;
 	float distY = ballPos.y - boxCenter.y;
 
-	if (distX >= -boxSize.x / 2.0f && distX <= boxSize.x / 2.0f) {
+	if(distX >= -boxSize.x / 2.0f && distX <= boxSize.x / 2.0f) {
 
-		if (distY >= (-boxSize.y / 2.0f) - ballRasius && distY <= (boxSize.y / 2.0f) + ballRasius) {
+		if(distY >= (-boxSize.y / 2.0f) - ballRasius && distY <= (boxSize.y / 2.0f) + ballRasius) {
 
 			return true;
 
@@ -1399,9 +1399,9 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 			return false;
 		}
 
-	} else if (distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
+	} else if(distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
 
-		if (distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
+		if(distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
 			return true;
 
 		} else {
@@ -1410,23 +1410,23 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 
 	} else {
 
-		if (distX < 0 && distY < 0) {
-			if (
+		if(distX < 0 && distY < 0) {
+			if(
 				Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
 				return false;
 			}
-		} else if (distX >= 0 && distY < 0) {
-			if (
+		} else if(distX >= 0 && distY < 0) {
+			if(
 				Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
 				return false;
 			}
 
-		} else if (distX < 0 && distY >= 0) {
-			if (
+		} else if(distX < 0 && distY >= 0) {
+			if(
 				Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
@@ -1434,7 +1434,7 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 			}
 
 		} else {
-			if (
+			if(
 				Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 				return true;
 			} else {
@@ -1449,11 +1449,11 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 	float distX = ballPos.x - boxCenter.x;
 	float distY = ballPos.y - boxCenter.y;
 
-	if (distX >= -boxSize.x / 2.0f && distX <= boxSize.x / 2.0f) {
+	if(distX >= -boxSize.x / 2.0f && distX <= boxSize.x / 2.0f) {
 
-		if (distY >= (-boxSize.y / 2.0f) - ballRasius && distY <= (boxSize.y / 2.0f) + ballRasius) {
+		if(distY >= (-boxSize.y / 2.0f) - ballRasius && distY <= (boxSize.y / 2.0f) + ballRasius) {
 
-			if (distY >= 0) {
+			if(distY >= 0) {
 				return 1;//上面に当たった
 			} else {
 				return 3;//下面に当たった
@@ -1463,11 +1463,11 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 			return false;
 		}
 
-	} else if (distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
+	} else if(distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
 
-		if (distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
+		if(distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
 
-			if (distX >= 0) {
+			if(distX >= 0) {
 				return 2;//右面に当たった
 			} else {
 				return 4;//左面に当たった
@@ -1479,10 +1479,10 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 
 	} else {
 
-		if (distX < 0 && distY >= 0) {//左上
-			if (Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+		if(distX < 0 && distY >= 0) {//左上
+			if(Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
-				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+				if(sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 1;//上面に当たった
 				} else {
 					return 4;//左面に当たった
@@ -1491,10 +1491,10 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 			} else {
 				return false;
 			}
-		} else if (distX >= 0 && distY >= 0) {//右上
-			if (Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+		} else if(distX >= 0 && distY >= 0) {//右上
+			if(Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
-				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+				if(sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 1;//上面に当たった
 				} else {
 					return 2;//右面に当たった
@@ -1504,10 +1504,10 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 				return false;
 			}
 
-		} else if (distX < 0 && distY < 0) {//左下
-			if (Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+		} else if(distX < 0 && distY < 0) {//左下
+			if(Length(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
-				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+				if(sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 3;//上面に当たった
 				} else {
 					return 4;//左面に当たった
@@ -1518,9 +1518,9 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 			}
 
 		} else {//右下
-			if (Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+			if(Length(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
 
-				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+				if(sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 3;//上面に当たった
 				} else {
 					return 2;//左面に当たった
@@ -1571,7 +1571,7 @@ void My::DrawQuad(
 	Vec2 preVertex[4];
 
 	//回転
-	for (int i = 0; i < 4; i++) {
+	for(int i = 0; i < 4; i++) {
 
 		preVertex[i] = vertex[i];
 
@@ -1615,13 +1615,13 @@ void My::DrawTriangle(Vec2 center, float radius, float theta, int color) {
 	Vec2 preVertex[3];
 
 	//初期座標
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 		vertex[i].x = center.x + cosf((-(1.0f / 2.0f) + (i * (2.0f / 3.0f))) * float(M_PI)) * radius;
 		vertex[i].y = center.y + sinf((-(1.0f / 2.0f) + (i * (2.0f / 3.0f))) * float(M_PI)) * radius;
 	}
 
 	//回転
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 
 		preVertex[i] = vertex[i];
 
@@ -1663,13 +1663,13 @@ void My::DrawTriangleWire(Vec2 center, float radius, float theta, int color) {
 	Vec2 preVertex[3];
 
 	//初期座標
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 		vertex[i].x = center.x + cosf((-(1.0f / 2.0f) + (i * (2.0f / 3.0f))) * float(M_PI)) * radius;
 		vertex[i].y = center.y + sinf((-(1.0f / 2.0f) + (i * (2.0f / 3.0f))) * float(M_PI)) * radius;
 	}
 
 	//回転
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 
 		preVertex[i] = vertex[i];
 
@@ -1734,7 +1734,7 @@ void My::DrawStar(Vec2 center, float radius, Vec2 scale, float theta, int color)
 	Vec2 crossPos[3];
 
 	//初期座標
-	for (int i = 0; i < 5; i++) {
+	for(int i = 0; i < 5; i++) {
 
 		vertex[i].x = center.x + (radius * scale.x) * cosf(((((2.0f / 5.0f) * i) - (1.0f / 2.0f)) * float(M_PI)));
 		vertex[i].y = center.y + (radius * scale.y) * sinf(((((2.0f / 5.0f) * i) - (1.0f / 2.0f)) * float(M_PI)));
@@ -1742,7 +1742,7 @@ void My::DrawStar(Vec2 center, float radius, Vec2 scale, float theta, int color)
 
 
 	//回転
-	for (int i = 0; i < 5; i++) {
+	for(int i = 0; i < 5; i++) {
 
 		preVertex[i] = vertex[i];
 
@@ -1761,7 +1761,7 @@ void My::DrawStar(Vec2 center, float radius, Vec2 scale, float theta, int color)
 	crossPos[2] = CrossPos2(vertex[4], vertex[1], vertex[0], vertex[2]);
 
 	//描画
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 		Novice::DrawTriangle(
 			int(vertex[i].x),
 			int(vertex[i].y),
@@ -1781,14 +1781,14 @@ void My::DrawStarWire(Vec2 center, float radius, Vec2 scale, float theta, int co
 	Vec2 crossPos[5];
 
 	//初期座標
-	for (int i = 0; i < 5; i++) {
+	for(int i = 0; i < 5; i++) {
 
 		vertex[i].x = center.x + (radius * scale.x) * cosf(((((2.0f / 5.0f) * i) - (1.0f / 2.0f)) * float(M_PI)));
 		vertex[i].y = center.y + (radius * scale.y) * sinf(((((2.0f / 5.0f) * i) - (1.0f / 2.0f)) * float(M_PI)));
 	}
 
 	//回転
-	for (int i = 0; i < 5; i++) {
+	for(int i = 0; i < 5; i++) {
 
 		preVertex[i] = vertex[i];
 
@@ -1809,7 +1809,7 @@ void My::DrawStarWire(Vec2 center, float radius, Vec2 scale, float theta, int co
 	crossPos[4] = CrossPos(vertex[4], vertex[1], vertex[3], vertex[0]);
 
 	//描画
-	for (int i = 0; i < 5; i++) {
+	for(int i = 0; i < 5; i++) {
 		Novice::DrawLine(
 			int(vertex[i].x),
 			int(vertex[i].y),
@@ -1818,7 +1818,7 @@ void My::DrawStarWire(Vec2 center, float radius, Vec2 scale, float theta, int co
 			color
 		);
 
-		if (i != 0) {
+		if(i != 0) {
 			Novice::DrawLine(
 				int(vertex[i].x),
 				int(vertex[i].y),
@@ -1857,8 +1857,8 @@ void My::DrawTwinkle(Vec2 center, Vec2 size, float theta, int color, float fatLe
 	int whiteGH = Novice::LoadTexture("white1x1.png");
 
 	//媒介変数を0~1に収める
-	if (fatLevel > 1.0f) { fatLevel = 1.0f; }
-	if (fatLevel < 0.0f) { fatLevel = 0.0f; }
+	if(fatLevel > 1.0f) { fatLevel = 1.0f; }
+	if(fatLevel < 0.0f) { fatLevel = 0.0f; }
 
 	//基準となる矩形の座標を決定=======================
 	basePos[0].x = 0.0f;
@@ -1905,8 +1905,8 @@ void My::DrawTwinkle(Vec2 center, Vec2 size, float theta, int color, float fatLe
 	drawPos[3][3].y = 0.0f;
 
 	//回転,移動
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 4; i++) {
+		for(int j = 0; j < 4; j++) {
 
 			drawPos[i][j] = Multiply(drawPos[i][j], RotateMatrix(theta));
 			drawPos[i][j] = drawPos[i][j].operator+(center);
@@ -1915,7 +1915,7 @@ void My::DrawTwinkle(Vec2 center, Vec2 size, float theta, int color, float fatLe
 	}
 
 	//描画=======================================
-	for (int i = 0; i < 4; i++) {
+	for(int i = 0; i < 4; i++) {
 
 		Novice::DrawQuad(
 			int(drawPos[i][0].x),
@@ -1949,11 +1949,11 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 	int whiteGH = Novice::LoadTexture("white1x1.png");
 
 	//媒介変数を0~1に収める
-	if (fatLevel > 1.0f) { fatLevel = 1.0f; }
-	if (fatLevel < 0.0f) { fatLevel = 0.0f; }
+	if(fatLevel > 1.0f) { fatLevel = 1.0f; }
+	if(fatLevel < 0.0f) { fatLevel = 0.0f; }
 
 	Vec2 basePos[6] = { 0.0f,0.0f };
-	for (int i = 0; i < 6; i++) {
+	for(int i = 0; i < 6; i++) {
 		basePos[i].x = cosf((float(i) / 3.0f) * float(M_PI));
 		basePos[i].y = sinf((float(i) / 3.0f) * float(M_PI));
 	}
@@ -1961,8 +1961,8 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 	//内側の六角形2つ
 	Vec2 hexagonPos[2][2][6] = { 0.0f,0.0f };
 
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 6; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 6; j++) {
 			hexagonPos[0][i][j].x = basePos[j].x * (size.x * 0.125f * float(i + 1));
 			hexagonPos[0][i][j].y = basePos[j].y * (size.y * 0.125f * float(i + 1));
 
@@ -1973,7 +1973,7 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 
 	//支柱
 	Vec2 pillarPos[3][4] = { 0.0f,0.0f };
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 		pillarPos[i][0] =
 			basePos[i].operator*(size.operator*({ 0.5f,0.5f })).operator+
 			(ShiftLine(basePos[i].operator*(size.operator*({ 0.5f,0.5f })), basePos[i + 3].operator*(size.operator*({ 0.5f,0.5f })), size.x * (0.025f * fatLevel)));
@@ -1993,8 +1993,8 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 
 	//先のふさふさ
 	Vec2 branchPos[2][2][6][4] = { 0.0f,0.0f };
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 6; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 6; j++) {
 			branchPos[0][i][j][0].x = basePos[j].x * (size.x * (0.25f + float(i) * 0.125f));
 			branchPos[0][i][j][0].y = basePos[j].y * (size.y * (0.25f + float(i) * 0.125f));
 			branchPos[1][i][j][0].x = basePos[j].x * (size.x * (0.25f + float(i) * 0.125f));
@@ -2021,9 +2021,9 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 	}
 
 	//回転、移動
-	for (int h = 0; h < 2; h++) {
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 6; j++) {
+	for(int h = 0; h < 2; h++) {
+		for(int i = 0; i < 2; i++) {
+			for(int j = 0; j < 6; j++) {
 
 				hexagonPos[h][i][j] = Multiply(hexagonPos[h][i][j], RotateMatrix(theta));
 				hexagonPos[h][i][j] = hexagonPos[h][i][j].operator+(center);
@@ -2031,17 +2031,17 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 		}
 	}
 
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 4; j++) {
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < 4; j++) {
 			pillarPos[i][j] = Multiply(pillarPos[i][j], RotateMatrix(theta));
 			pillarPos[i][j] = pillarPos[i][j].operator+(center);
 		}
 	}
 
-	for (int h = 0; h < 2; h++) {
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 6; j++) {
-				for (int k = 0; k < 4; k++) {
+	for(int h = 0; h < 2; h++) {
+		for(int i = 0; i < 2; i++) {
+			for(int j = 0; j < 6; j++) {
+				for(int k = 0; k < 4; k++) {
 
 					branchPos[h][i][j][k] = Multiply(branchPos[h][i][j][k], RotateMatrix(theta));
 					branchPos[h][i][j][k] = branchPos[h][i][j][k].operator+(center);
@@ -2051,10 +2051,10 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 	}
 
 	//描画
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 6; j++) {
+	for(int i = 0; i < 2; i++) {
+		for(int j = 0; j < 6; j++) {
 
-			if (j != 5) {
+			if(j != 5) {
 				Novice::DrawQuad(
 					int(hexagonPos[0][i][j].x),
 					int(hexagonPos[0][i][j].y),
@@ -2088,7 +2088,7 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 		}
 	}
 
-	for (int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) {
 
 		Novice::DrawQuad(
 			int(pillarPos[i][0].x),
@@ -2106,9 +2106,9 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 		);
 	}
 
-	for (int h = 0; h < 2; h++) {
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 6; j++) {
+	for(int h = 0; h < 2; h++) {
+		for(int i = 0; i < 2; i++) {
+			for(int j = 0; j < 6; j++) {
 
 				Novice::DrawQuad(
 					int(branchPos[h][i][j][0].x),
@@ -2132,14 +2132,14 @@ void My::DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel
 
 
 // グリッドを描画する関数
-void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix) {
+void DrawGrid(Matrix4x4* viewPjojectionMatrix, Matrix4x4* viewportMatrix) {
 
 	const float kGridHalfWidth = 2.0f;
 	const int kGridSubdivision = 10;
 	const float kGridEvery = (kGridHalfWidth * 2.0f) / kGridSubdivision;
-	Matrix4x4 wvpVpMatrix = Multiply(viewPjojectionMatrix, viewportMatrix);
+	Matrix4x4 wvpVpMatrix = Multiply(*viewPjojectionMatrix, *viewportMatrix);
 
-	for (int xIndex = 0; xIndex <= kGridSubdivision; xIndex++) {
+	for(int xIndex = 0; xIndex <= kGridSubdivision; xIndex++) {
 		Vec3 point[2];
 		point[0] = { kGridHalfWidth - kGridEvery * xIndex,0.0f,kGridHalfWidth };
 		point[1] = { kGridHalfWidth - kGridEvery * xIndex,0.0f,-kGridHalfWidth };
@@ -2147,7 +2147,7 @@ void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMa
 		point[0] = Multiply(point[0], wvpVpMatrix);
 		point[1] = Multiply(point[1], wvpVpMatrix);
 
-		if (xIndex != kGridSubdivision / 2) {
+		if(xIndex != kGridSubdivision / 2) {
 			Novice::DrawLine(
 				int(point[0].x),
 				int(point[0].y),
@@ -2166,7 +2166,7 @@ void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMa
 		}
 	}
 
-	for (int zIndex = 0; zIndex <= kGridSubdivision; zIndex++) {
+	for(int zIndex = 0; zIndex <= kGridSubdivision; zIndex++) {
 		Vec3 point[2];
 		point[0] = { kGridHalfWidth,0.0f,kGridHalfWidth - kGridEvery * zIndex };
 		point[1] = { -kGridHalfWidth,0.0f,kGridHalfWidth - kGridEvery * zIndex };
@@ -2174,7 +2174,7 @@ void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMa
 		point[0] = Multiply(point[0], wvpVpMatrix);
 		point[1] = Multiply(point[1], wvpVpMatrix);
 
-		if (zIndex != kGridSubdivision / 2) {
+		if(zIndex != kGridSubdivision / 2) {
 			Novice::DrawLine(
 				int(point[0].x),
 				int(point[0].y),
@@ -2189,6 +2189,76 @@ void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMa
 				int(point[1].x),
 				int(point[1].y),
 				0x000000ff
+			);
+		}
+	}
+}
+
+void DrawSphere(
+	const Vec3& size,
+	const Vec3& scale,
+	const Vec3& rotate,
+	const Vec3& position,
+	int kSubdivision,
+	const Matrix4x4& viewPjojectionMatrix,
+	const Matrix4x4& viewportMatrix,
+	unsigned int color){
+
+	float kLatEvery_ = float(M_PI) / kSubdivision;// 縦の1刻みごとの角度
+	float kLonEvery_ = (2.0f * float(M_PI)) / kSubdivision;// 横の1刻みごとの角度
+
+	float r1 = size.x * 0.5f;// 横の半径
+	float heightRate = size.y / size.x;// 縦幅の横幅に対する比率
+	float depthRate = size.z / size.x;// 縦幅の横幅に対する比率
+
+	// レンダリング用の行列
+	Matrix4x4 worldMatrix = AffineMatrix(scale, rotate, position);
+	Matrix4x4 wvpVpMatrix = Multiply(Multiply(worldMatrix,viewPjojectionMatrix), viewportMatrix);
+	
+	// 結果を格納する変数
+	Vec3 a,b,c;
+
+	// 計算に使う値や、結果の出ているY値などを先に求める
+	std::vector<float>posY(0, 0.0f);
+	std::vector<float>r2(0, 0.0f);
+	for(int latIdx = 0; latIdx <= kSubdivision; ++latIdx){
+		posY.push_back(r1 * std::sin(-(float(M_PI) * 0.5f) + kLatEvery_ * latIdx) * heightRate);
+		r2.push_back(r1 * std::cos(-(float(M_PI) * 0.5f) + kLatEvery_ * latIdx));
+	}
+
+	// X,Z座標を求めていく
+	for(int latIdx = 0; latIdx < kSubdivision; ++latIdx){
+		for(int lonIdx = 0; lonIdx < kSubdivision; ++lonIdx){
+
+			// 各座標を求める
+			a.x = r2[latIdx] * std::cos(kLonEvery_ * lonIdx);
+			b.x = r2[latIdx + 1] * std::cos(kLonEvery_ * lonIdx);
+			c.x = r2[latIdx] * std::cos(kLonEvery_ * (lonIdx + 1));
+
+			a.y = posY[latIdx];
+			b.y = posY[latIdx + 1];
+			c.y = posY[latIdx];
+
+			a.z = r2[latIdx] * std::sin(kLonEvery_ * lonIdx) * depthRate;
+			b.z = r2[latIdx + 1] * std::sin(kLonEvery_ * lonIdx) * depthRate;
+			c.z = r2[latIdx] * std::sin(kLonEvery_ * (lonIdx + 1)) * depthRate;
+
+			// スクリーン座標に変換
+			a = Multiply(a, wvpVpMatrix);
+			b = Multiply(b, wvpVpMatrix);
+			c = Multiply(c, wvpVpMatrix);
+
+			// 線を引く
+			My::DrawLine(
+				{ a.x,a.y },
+				{ b.x,b.y },
+				color
+			);
+
+			My::DrawLine(
+				{ a.x,a.y },
+				{ c.x,c.y },
+				color
 			);
 		}
 	}

@@ -227,7 +227,18 @@ namespace My {
 	void DrawSnow(Vec2 center, Vec2 size, float theta, int color, float fatLevel);
 }
 
-void DrawGrid(const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix);
+void DrawGrid(Matrix4x4* viewPjojectionMatrix, Matrix4x4* viewportMatrix);
+
+// 球を描画する関数
+void DrawSphere(
+	const Vec3& size,
+	const Vec3& scale,
+	const Vec3& rotate,
+	const Vec3& translate,
+	int kSubdivision,
+	const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix,
+	unsigned int color
+);
 
 //================================================================
 //                     色を扱う関数
