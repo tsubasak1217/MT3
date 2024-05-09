@@ -29,6 +29,9 @@
     <Filter Include="3D">
       <UniqueIdentifier>{7203124a-1c29-47f6-843d-d95e01d1bbfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lib\Shapes">
+      <UniqueIdentifier>{f09ad644-3d92-46b3-bfa9-52f7a409a622}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.cpp">
@@ -151,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="Object\Sphere.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Shapes\Segment.h">
+      <Filter>Lib\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

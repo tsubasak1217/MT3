@@ -4,6 +4,9 @@
 
 class Sphere{
 public:
+
+	Sphere(){};
+
 	Sphere(
 		const Vec3& size, const Vec3& scale, const Vec3& rotate, const Vec3& translate,
 		Matrix4x4* viewProjection, Matrix4x4* viewport

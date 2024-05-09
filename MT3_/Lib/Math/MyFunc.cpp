@@ -159,7 +159,18 @@ float Dot(const Vec2& a, const Vec2& b) {
 
 float Dot(const Vec3& a, const Vec3& b) {
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
-};
+}
+
+// 射影ベクトルを求める・線への最近傍点を求める
+Vec3 Project(const Vec3& vector1, const Vec3& vector2)
+{
+	return Normalize(vector2) * Dot(vector1, Normalize(vector2));
+}
+
+Vec3 ClosestPoint(const Vec3& point, const Vec3& seg_origin, const Vec3& seg_end)
+{
+	return seg_origin + Project(point - seg_origin, seg_end - seg_origin);
+}
 
 //外積を求める関数
 float Cross(
@@ -2262,6 +2273,28 @@ void DrawSphere(
 			);
 		}
 	}
+}
+
+void DrawSegment(
+	const Segment& seg, 
+	const Matrix4x4& viewPjojectionMatrix, 
+	const Matrix4x4& viewportMatrix,
+	uint32_t color){
+
+	// レンダリング用の行列
+	Matrix4x4 worldMatrix = AffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, {0.0f,0.0f,0.0f});
+	Matrix4x4 wvpVpMatrix = Multiply(Multiply(worldMatrix, viewPjojectionMatrix), viewportMatrix);
+
+	Vec3 origin = Multiply(seg.origin_, wvpVpMatrix);
+	Vec3 end = Multiply(seg.end_, wvpVpMatrix);
+
+	Novice::DrawLine(
+		int(origin.x),
+		int(origin.y),
+		int(end.x),
+		int(end.y),
+		color
+	);
 }
 
 //================================================================

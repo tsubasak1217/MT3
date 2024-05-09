@@ -14,7 +14,7 @@
 #include "Easing.h"
 #include "VectorN.h"
 #include "MatrixNxN.h"
-
+#include "Segment.h"
 
 //何もしない関数
 void Void();
@@ -58,6 +58,10 @@ float Dot(const Vec2& pos1, const Vec2& pos2, const Vec2& targetPos);
 float Dot(const Vec2& a, const Vec2& b);
 float Dot(const Vec3& a, const Vec3& b);
 
+// 射影ベクトルを求める・線への最近傍点を求める
+Vec3 Project(const Vec3& vector1, const Vec3& vector2);
+Vec3 ClosestPoint(const Vec3& point, const Vec3& seg_origin, const Vec3& seg_end);
+
 //外積を求める関数
 float Cross(
 	float line1StartX, float line1StartY,
@@ -66,6 +70,7 @@ float Cross(
 );
 
 float Cross(Vec2 pos1, Vec2 pos2, Vec2 targetPos);
+
 enum VIEWMODE {
 	kScreen,
 	kWorld
@@ -238,6 +243,13 @@ void DrawSphere(
 	int kSubdivision,
 	const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix,
 	unsigned int color
+);
+
+void DrawSegment(
+	const Segment& seg, 
+	const Matrix4x4& viewPjojectionMatrix,
+	const Matrix4x4& viewportMatrix,
+	uint32_t color
 );
 
 //================================================================

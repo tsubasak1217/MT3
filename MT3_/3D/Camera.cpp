@@ -19,7 +19,7 @@ void Camera::Init() {
 	lerpTranslate_ = translate_;
 
 	worldMatrix_ = AffineMatrix(scale_, rotate_, translate_);
-	rotateRate_ = 1.0f / 120.0f * 3.14f;
+	rotateRate_ = (1.0f / 512.0f) * 3.14f;
 }
 
 void Camera::Update() {

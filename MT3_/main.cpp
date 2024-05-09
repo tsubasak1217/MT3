@@ -5,7 +5,7 @@
 #include "Sphere.h"
 #include "RenderMatrixes.h"
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_01_02";
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_00";
 
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -20,14 +20,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
-	Sphere sphere(
-		{ 1.0f,1.0f,1.0f },// Size
+
+	Segment seg({-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f});
+	Vec3 point(-1.5f, 0.6f, 0.6f);
+	Sphere sphere[2];
+
+	sphere[0].Init(
+		{ 0.03f,0.03f,0.03f },// Size
 		{ 1.0f,1.0f,1.0f },// Scale
 		{ 0.0f,0.0f,0.0f },// Rotate
-		{ 0.0f,0.0f,0.0f },// Translate
+		point,// Translate
 		renderMat.GetViewProjectionMat(),
 		renderMat.GetViewportMat()
 	);
+
+	sphere[1].Init(
+		{ 0.03f,0.03f,0.03f },// Size
+		{ 1.0f,1.0f,1.0f },// Scale
+		{ 0.0f,0.0f,0.0f },// Rotate
+		ClosestPoint(point,seg.origin_,seg.end_),// Translate
+		renderMat.GetViewProjectionMat(),
+		renderMat.GetViewportMat()
+	);
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -47,24 +62,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("translate", &camera->lerpTranslate_.x, 0.2f);
 		ImGui::End();
 
-		ImGui::Begin("Sphere");
-		ImGui::DragFloat3("size", &sphere.size_.x, 0.02f);
-		ImGui::DragFloat3("scale", &sphere.scale_.x,0.02f);
-		ImGui::DragFloat3("rotate", &sphere.rotate_.x, 3.14f * 0.025f);
-		ImGui::DragFloat3("translate", &sphere.translate_.x, 0.05f);
+		ImGui::Begin("Point");
+		ImGui::DragFloat3("position", &point.x, 0.1f);
 		ImGui::End();
+
+		ImGui::Begin("Segment");
+		ImGui::DragFloat3("origin", &seg.origin_.x, 0.1f);
+		ImGui::DragFloat3("end", &seg.end_.x, 0.1f);
+		ImGui::End();
+
+
+		sphere[0].translate_ = point;
+		sphere[1].translate_ = ClosestPoint(point, seg.origin_, seg.end_);
 
 		// Rキーでリセット
 		if(keys[DIK_R]) {
 			camera->Init();
-			sphere.Init(
-				{ 1.0f,1.0f,1.0f },// Size
-				{ 1.0f,1.0f,1.0f },// Scale
-				{ 0.0f,0.0f,0.0f },// Rotate
-				{ 0.0f,0.0f,0.0f },// Translate
-				renderMat.GetViewProjectionMat(),
-				renderMat.GetViewportMat()
-			);
 		}
 
 		// レンダリング用の行列とか更新
@@ -79,8 +92,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		// グリッド
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
-		sphere.Draw(16, 0xff0000ff);
+		
+		// 線分
+		DrawSegment(
+			seg,
+			*renderMat.GetViewProjectionMat(),
+			*renderMat.GetViewportMat(),
+			0xffffffff
+		);
+
+		// 球
+		for(int i = 0; i < 2; i++){
+			sphere[i].Draw(16, 0xff0000ff - (0xff000000 * i));
+		}
 
 		///
 		/// ↑描画処理ここまで
