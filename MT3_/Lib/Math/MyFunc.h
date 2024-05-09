@@ -15,6 +15,7 @@
 #include "VectorN.h"
 #include "MatrixNxN.h"
 #include "Segment.h"
+#include "Sphere.h"
 
 //何もしない関数
 void Void();
@@ -203,6 +204,8 @@ void VecScreenPrintf(int posX, int posY, const Vec3& vector, const char* string 
 bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius);
 //回転していない矩形と円の当たり判定(当たった面を返す)
 int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius);
+// 自由な球同士の当たり判定
+bool Collision_Sphere_Sphere(const Sphere& sphere1, const Sphere& sphere2);
 
 //================================================================
 //                     オリジナル描画関数

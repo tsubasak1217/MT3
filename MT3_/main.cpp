@@ -5,7 +5,7 @@
 #include "Sphere.h"
 #include "RenderMatrixes.h"
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_00";
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_01";
 
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -21,24 +21,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	Segment seg({-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f});
-	Vec3 point(-1.5f, 0.6f, 0.6f);
 	Sphere sphere[2];
 
 	sphere[0].Init(
-		{ 0.03f,0.03f,0.03f },// Size
+		{ 0.5f,0.5f,0.5f },// Size
 		{ 1.0f,1.0f,1.0f },// Scale
 		{ 0.0f,0.0f,0.0f },// Rotate
-		point,// Translate
+		{ 1.0f,0.0f,1.0f },// Translate
 		renderMat.GetViewProjectionMat(),
 		renderMat.GetViewportMat()
 	);
 
 	sphere[1].Init(
-		{ 0.03f,0.03f,0.03f },// Size
+		{ 1.0f,1.0f,1.0f },// Size
 		{ 1.0f,1.0f,1.0f },// Scale
 		{ 0.0f,0.0f,0.0f },// Rotate
-		ClosestPoint(point,seg.origin_,seg.end_),// Translate
+		{ -1.0f,0.0f,-1.0f },// Translate
 		renderMat.GetViewProjectionMat(),
 		renderMat.GetViewportMat()
 	);
@@ -62,22 +60,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("translate", &camera->lerpTranslate_.x, 0.2f);
 		ImGui::End();
 
-		ImGui::Begin("Point");
-		ImGui::DragFloat3("position", &point.x, 0.1f);
-		ImGui::End();
-
-		ImGui::Begin("Segment");
-		ImGui::DragFloat3("origin", &seg.origin_.x, 0.1f);
-		ImGui::DragFloat3("end", &seg.end_.x, 0.1f);
-		ImGui::End();
-
-
-		sphere[0].translate_ = point;
-		sphere[1].translate_ = ClosestPoint(point, seg.origin_, seg.end_);
-
 		// Rキーでリセット
 		if(keys[DIK_R]) {
 			camera->Init();
+		}
+
+		if(Collision_Sphere_Sphere(sphere[0], sphere[1])){
+			sphere[0].color_ = 0xff0000ff;
+		} else{
+			sphere[0].color_ = 0xffffffff;
 		}
 
 		// レンダリング用の行列とか更新
@@ -94,18 +85,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// グリッド
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
-		
-		// 線分
-		DrawSegment(
-			seg,
-			*renderMat.GetViewProjectionMat(),
-			*renderMat.GetViewportMat(),
-			0xffffffff
-		);
 
 		// 球
 		for(int i = 0; i < 2; i++){
-			sphere[i].Draw(16, 0xff0000ff - (0xff000000 * i));
+			sphere[i].Draw(16);
 		}
 
 		///

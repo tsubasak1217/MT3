@@ -1544,6 +1544,38 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 	}
 }
 
+bool Collision_Sphere_Sphere(Sphere sphere1, Sphere sphere2)
+{
+	// sphere1基準に変形する
+	sphere2.rotate_ -= sphere1.rotate_;
+	sphere2.translate_ -= sphere1.translate_;
+	sphere2.translate_ /= sphere1.size_;
+
+	sphere1.rotate_ = { 0.0f,0.0f,0.0f };
+	sphere1.translate_ = { 0.0f,0.0f,0.0f };
+
+	sphere2.size_ /= sphere1.size_;
+	sphere1.size_ /= sphere1.size_;
+	
+	sphere2.size_ += sphere1.size_;
+	sphere2.size_ -= sphere1.size_;
+
+	// 今度はsphere2基準に動かす
+	sphere1.rotate_ -= sphere2.rotate_;
+	sphere1.translate_ -= sphere2.translate_;
+	sphere1.translate_ /= sphere2.size_;
+
+	sphere2.rotate_ = { 0.0f,0.0f,0.0f };
+	sphere2.translate_ = { 0.0f,0.0f,0.0f };
+
+	sphere2.size_ /= sphere2.size_;
+
+	// sphere2 → sphere1 の距離とベクトルを求める
+	float distance = Length(sphere1.translate_, sphere2.translate_);
+
+	return distance <= 1.0f;
+}
+
 //================================================================
 //                     オリジナル描画関数
 //================================================================
