@@ -205,7 +205,13 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 //回転していない矩形と円の当たり判定(当たった面を返す)
 int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius);
 // 自由な球同士の当たり判定
-bool Collision_Sphere_Sphere(const Sphere& sphere1, const Sphere& sphere2);
+bool Collision_Sphere_Sphere(Sphere sphere1, Sphere sphere2);
+
+void Collision_Sphere_Sphere(Sphere* sphere1, Sphere* sphere2);
+void Collision_Sphere_Sphere2(Sphere* sphere1, Sphere* sphere2);
+void Collision_Sphere_Sphere3(Sphere* sphere1, Sphere* sphere2);
+void Collision_Sphere_Sphere4(Sphere* sphere1, Sphere* sphere2);
+void Collision_Sphere_Sphere5(Sphere* sphere1, Sphere* sphere2);
 
 //================================================================
 //                     オリジナル描画関数
