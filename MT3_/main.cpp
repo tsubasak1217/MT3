@@ -41,7 +41,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderMat.GetViewportMat()
 	);
 
-	int pushCount = 0;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -59,16 +58,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("Camera");
 		ImGui::DragFloat3("rotate", &camera->lerpRotate_.x, camera->rotateRate_);
 		ImGui::DragFloat3("translate", &camera->lerpTranslate_.x, 0.2f);
+		ImGui::Text("[ CLICK WHEEL & MOVE MOUSE ] -> moveCamera");
 		ImGui::End();
 
 		ImGui::Begin("Sphere1");
-		ImGui::DragFloat3("size", &sphere[0].size_.x, 0.02f,0.0f);
+		ImGui::DragFloat("scale", &sphere[0].scale_.x, 0.02f,0.0f);
+		sphere[0].scale_ = { sphere[0].scale_.x ,sphere[0].scale_.x ,sphere[0].scale_.x };
+		sphere[0].radius_ = sphere[0].size_.x * sphere[0].scale_.x * 0.5f;
 		ImGui::DragFloat3("rotate", &sphere[0] .rotate_.x, 3.14f * 0.025f);
 		ImGui::DragFloat3("translate", &sphere[0].translate_.x, 0.05f);
 		ImGui::End();
 
 		ImGui::Begin("Sphere2");
-		ImGui::DragFloat3("size", &sphere[1].size_.x, 0.02f,0.0f);
+		ImGui::DragFloat("scale", &sphere[1].scale_.x, 0.02f, 0.0f);
+		sphere[1].scale_ = { sphere[1].scale_.x ,sphere[1].scale_.x ,sphere[1].scale_.x };
+		sphere[1].radius_ = sphere[1].size_.x * sphere[1].scale_.x * 0.5f;
 		ImGui::DragFloat3("rotate", &sphere[1].rotate_.x, 3.14f * 0.025f);
 		ImGui::DragFloat3("translate", &sphere[1].translate_.x, 0.05f);
 		ImGui::End();
@@ -94,30 +98,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				renderMat.GetViewportMat()
 			);
 
-			pushCount = 0;
 		}
 
 		if(Collision_Sphere_Sphere(sphere[0], sphere[1])){
-			sphere[0].color_ = 0xff0000ff;
+			sphere[1].color_ = 0xff0000ff;
 		} else{
-			sphere[0].color_ = 0xffffffff;
-		}
-
-		if(keys[DIK_SPACE] && !preKeys[DIK_SPACE]){
-			pushCount++;
-
-			if(pushCount == 1){
-				Collision_Sphere_Sphere(&sphere[0], &sphere[1]);
-			} else if(pushCount == 2){
-				Collision_Sphere_Sphere2(&sphere[0], &sphere[1]);
-			} else if(pushCount == 3){
-				Collision_Sphere_Sphere3(&sphere[0], &sphere[1]);
-			} else if(pushCount == 4){
-				Collision_Sphere_Sphere4(&sphere[0], &sphere[1]);
-			} else{
-				Collision_Sphere_Sphere5(&sphere[0], &sphere[1]);
-				pushCount = 0;
-			}
+			sphere[1].color_ = 0xffffffff;
 		}
 
 		// レンダリング用の行列とか更新

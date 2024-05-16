@@ -28,6 +28,7 @@ public:
 	Vec3 rotate_;
 	Vec3 translate_;
 	uint32_t color_;
+	float radius_;
 
 private:
 	Matrix4x4* viewPrpjectionMatrix_;
