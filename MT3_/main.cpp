@@ -3,6 +3,7 @@
 #include "MyFunc.h"
 #include "Camera.h"
 #include "Sphere.h"
+#include "Plane.h"
 #include "RenderMatrixes.h"
 
 const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_01";
@@ -21,18 +22,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	Sphere sphere[2];
+	Sphere sphere;
+	Plane plane(
+		{ 0.0f,1.0f,0.0f },
+		{ 0.0f,0.0f,0.0f },
+		2.0f
+	);
 
-	sphere[0].Init(
-		{ 0.5f,0.5f,0.5f },// Size
-		{ 1.0f,1.0f,1.0f },// Scale
-		{ 0.0f,0.0f,0.0f },// Rotate
-		{ 1.0f,0.0f,1.0f },// Translate
+	plane.SetVpVp(
 		renderMat.GetViewProjectionMat(),
 		renderMat.GetViewportMat()
 	);
 
-	sphere[1].Init(
+	sphere.Init(
 		{ 1.0f,1.0f,1.0f },// Size
 		{ 1.0f,1.0f,1.0f },// Scale
 		{ 0.0f,0.0f,0.0f },// Rotate
@@ -61,35 +63,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Text("[ CLICK WHEEL & MOVE MOUSE ] -> moveCamera");
 		ImGui::End();
 
-		ImGui::Begin("Sphere1");
-		ImGui::DragFloat("scale", &sphere[0].scale_.x, 0.02f,0.0f);
-		sphere[0].scale_ = { sphere[0].scale_.x ,sphere[0].scale_.x ,sphere[0].scale_.x };
-		sphere[0].radius_ = sphere[0].size_.x * sphere[0].scale_.x * 0.5f;
-		ImGui::DragFloat3("rotate", &sphere[0] .rotate_.x, 3.14f * 0.025f);
-		ImGui::DragFloat3("translate", &sphere[0].translate_.x, 0.05f);
+		ImGui::Begin("Sphere");
+		ImGui::DragFloat("scale", &sphere.scale_.x, 0.02f, 0.0f);
+		sphere.scale_ = { sphere.scale_.x ,sphere.scale_.x ,sphere.scale_.x };
+		sphere.radius_ = sphere.size_.x * sphere.scale_.x * 0.5f;
+		ImGui::DragFloat3("rotate", &sphere.rotate_.x, 3.14f * 0.025f);
+		ImGui::DragFloat3("translate", &sphere.translate_.x, 0.05f);
 		ImGui::End();
 
-		ImGui::Begin("Sphere2");
-		ImGui::DragFloat("scale", &sphere[1].scale_.x, 0.02f, 0.0f);
-		sphere[1].scale_ = { sphere[1].scale_.x ,sphere[1].scale_.x ,sphere[1].scale_.x };
-		sphere[1].radius_ = sphere[1].size_.x * sphere[1].scale_.x * 0.5f;
-		ImGui::DragFloat3("rotate", &sphere[1].rotate_.x, 3.14f * 0.025f);
-		ImGui::DragFloat3("translate", &sphere[1].translate_.x, 0.05f);
+		ImGui::Begin("Plane");
+		ImGui::DragFloat3("translate", &plane.centerPos_.x, 0.01f);
+		ImGui::DragFloat3("rotate", &plane.rotate_.x, 3.14f * 0.005f);
 		ImGui::End();
 
 		// Rキーでリセット
 		if(keys[DIK_R]) {
 			camera->Init();
-			sphere[0].Init(
-				{ 0.5f,0.5f,0.5f },// Size
-				{ 1.0f,1.0f,1.0f },// Scale
-				{ 0.0f,0.0f,0.0f },// Rotate
-				{ 1.0f,0.0f,1.0f },// Translate
-				renderMat.GetViewProjectionMat(),
-				renderMat.GetViewportMat()
-			);
 
-			sphere[1].Init(
+			sphere.Init(
 				{ 1.0f,1.0f,1.0f },// Size
 				{ 1.0f,1.0f,1.0f },// Scale
 				{ 0.0f,0.0f,0.0f },// Rotate
@@ -100,15 +91,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		}
 
-		if(Collision_Sphere_Sphere(sphere[0], sphere[1])){
-			sphere[1].color_ = 0xff0000ff;
-		} else{
-			sphere[1].color_ = 0xffffffff;
-		}
-
 		// レンダリング用の行列とか更新
 		camera->Update();
 		renderMat.Update();
+		plane.Update();
+
+		if(Collision_Sphere_Plane(sphere, plane)){
+			sphere.color_ = 0xff0000ff;
+		} else{
+			sphere.color_ = 0xffffffff;
+		}
 
 		///
 		/// ↑更新処理ここまで
@@ -122,9 +114,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
 
 		// 球
-		for(int i = 0; i < 2; i++){
-			sphere[i].Draw(16);
-		}
+		sphere.Draw(16);
+
+		// 平面
+		plane.Draw();
 
 		///
 		/// ↑描画処理ここまで

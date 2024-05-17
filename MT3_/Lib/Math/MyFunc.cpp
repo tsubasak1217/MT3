@@ -1549,6 +1549,15 @@ bool Collision_Sphere_Sphere(Sphere sphere1, Sphere sphere2)
 	return Length(sphere1.translate_ - sphere2.translate_) <= sphere1.radius_ + sphere2.radius_;
 }
 
+bool Collision_Sphere_Plane(const Sphere& sphere, const Plane& plane)
+{
+	float projectionVec[2];
+	projectionVec[0] = Dot(plane.normalVector_, plane.centerPos_);
+	projectionVec[1] = Dot(plane.normalVector_, sphere.translate_);
+
+	return fabsf(projectionVec[1] - projectionVec[0]) <= sphere.radius_;
+}
+
 
 //================================================================
 //                     オリジナル描画関数
@@ -2278,6 +2287,34 @@ void DrawSphere(
 				color
 			);
 		}
+	}
+}
+
+void DrawPlane(const Vec3& centerPos, const Vec3& rotate, float size, Matrix4x4 viewProjectionMat,Matrix4x4 viewportMat){
+
+	Vec3 vertex[4] = {
+		{-size * 0.5f,0.0f,size * 0.5f},
+		{size * 0.5f,0.0f,size * 0.5f},
+		{size * 0.5f,0.0f,-size * 0.5f},
+		{-size * 0.5f,0.0f,-size * 0.5f}
+	};
+
+	Matrix4x4 worldMat = Multiply(RotateMatrix(rotate), TranslateMatrix(centerPos));
+	Matrix4x4 vpVpMat = Multiply(viewProjectionMat, viewportMat);
+	for(int i = 0; i < 4; i++){
+		vertex[i] = Multiply(vertex[i], worldMat);
+		vertex[i] = Multiply(vertex[i], vpVpMat);
+	}
+
+
+	for(int i = 0; i < 4; i++){
+		Novice::DrawLine(
+			int(vertex[i].x),
+			int(vertex[i].y),
+			int(vertex[(i + 1) % 4].x),
+			int(vertex[(i + 1) % 4].y),
+			0xffffffff
+		);
 	}
 }
 

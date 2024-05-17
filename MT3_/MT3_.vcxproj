@@ -110,6 +110,7 @@
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="Lib\Math\Easing.cpp" />
     <ClCompile Include="Lib\Math\MyFunc.cpp" />
+    <ClCompile Include="Lib\Shapes\Plane.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\Sphere.cpp" />
   </ItemGroup>
@@ -140,6 +141,7 @@
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Lib\Math\Easing.h" />
     <ClInclude Include="Lib\Math\MyFunc.h" />
+    <ClInclude Include="Lib\Shapes\Plane.h" />
     <ClInclude Include="Lib\Shapes\Segment.h" />
     <ClInclude Include="Lib\Tensor\MatrixNxN.h" />
     <ClInclude Include="Lib\Tensor\VectorN.h" />

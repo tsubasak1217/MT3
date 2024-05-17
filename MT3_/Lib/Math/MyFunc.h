@@ -16,6 +16,7 @@
 #include "MatrixNxN.h"
 #include "Segment.h"
 #include "Sphere.h"
+#include "Plane.h"
 
 //何もしない関数
 void Void();
@@ -206,6 +207,8 @@ bool IsHitBox_Ball(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius)
 int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float ballRasius);
 // 自由な球同士の当たり判定
 bool Collision_Sphere_Sphere(Sphere sphere1, Sphere sphere2);
+// 球と平面の当たり判定
+bool Collision_Sphere_Plane(const Sphere& sphere, const Plane& plane);
 
 //================================================================
 //                     オリジナル描画関数
@@ -246,6 +249,15 @@ void DrawSphere(
 	int kSubdivision,
 	const Matrix4x4& viewPjojectionMatrix, const Matrix4x4& viewportMatrix,
 	unsigned int color
+);
+
+// 平面を描画する関数
+void DrawPlane(
+	const Vec3& centerPos,
+	const Vec3& rotate,
+	float size,
+	Matrix4x4 viewProjectionMat,
+	Matrix4x4 viewportMat
 );
 
 void DrawSegment(
