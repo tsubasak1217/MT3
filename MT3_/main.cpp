@@ -6,7 +6,7 @@
 #include "Plane.h"
 #include "RenderMatrixes.h"
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_01";
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_02";
 
 
 // Windowsアプリでのエントリーポイント(main関数)
