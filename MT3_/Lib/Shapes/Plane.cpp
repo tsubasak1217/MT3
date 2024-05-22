@@ -21,4 +21,5 @@ void Plane::Draw(){
 void Plane::Update()
 {
 	normalVector_ = Normalize(Multiply({ 0.0f,-1.0f,0.0f }, RotateMatrix(rotate_)));
+	distance_ = Dot(normalVector_, centerPos_);
 }

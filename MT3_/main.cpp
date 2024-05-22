@@ -6,7 +6,7 @@
 #include "Plane.h"
 #include "RenderMatrixes.h"
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_02";
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_03";
 
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	Sphere sphere;
+	Line line({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f },SEGMENT);
 	Plane plane(
 		{ 0.0f,1.0f,0.0f },
 		{ 0.0f,0.0f,0.0f },
@@ -34,14 +34,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderMat.GetViewportMat()
 	);
 
-	sphere.Init(
-		{ 1.0f,1.0f,1.0f },// Size
-		{ 1.0f,1.0f,1.0f },// Scale
-		{ 0.0f,0.0f,0.0f },// Rotate
-		{ 0.0f,0.0f,0.0f },// Translate
-		renderMat.GetViewProjectionMat(),
-		renderMat.GetViewportMat()
-	);
+	line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
 
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -63,12 +56,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Text("[ CLICK WHEEL & MOVE MOUSE ] -> moveCamera");
 		ImGui::End();
 
-		ImGui::Begin("Sphere");
-		ImGui::DragFloat("scale", &sphere.scale_.x, 0.02f, 0.0f);
-		sphere.scale_ = { sphere.scale_.x ,sphere.scale_.x ,sphere.scale_.x };
-		sphere.radius_ = sphere.size_.x * sphere.scale_.x * 0.5f;
-		ImGui::DragFloat3("rotate", &sphere.rotate_.x, 3.14f * 0.025f);
-		ImGui::DragFloat3("translate", &sphere.translate_.x, 0.05f);
+		ImGui::Begin("Line");
+		ImGui::DragFloat3("origin", &line.origin_.x, 0.01f);
+		ImGui::DragFloat3("end", &line.end_.x,0.01f);
+		ImGui::InputInt("LineType", &line.type_);
+		ImGui::Text("Type: SEGMENT = 0, RAY = 1, LINE = 2");
 		ImGui::End();
 
 		ImGui::Begin("Plane");
@@ -79,15 +71,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// Rキーでリセット
 		if(keys[DIK_R]) {
 			camera->Init();
-
-			sphere.Init(
-				{ 1.0f,1.0f,1.0f },// Size
-				{ 1.0f,1.0f,1.0f },// Scale
-				{ 0.0f,0.0f,0.0f },// Rotate
-				{ 0.0f,0.0f,0.0f },// Translate
-				renderMat.GetViewProjectionMat(),
-				renderMat.GetViewportMat()
-			);
+			line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f },SEGMENT);
 
 		}
 
@@ -96,10 +80,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderMat.Update();
 		plane.Update();
 
-		if(Collision_Sphere_Plane(sphere, plane)){
-			sphere.color_ = 0xff0000ff;
+		if(Collision_Plane_Line(plane,line)){
+			line.color_ = 0xff0000ff;
 		} else{
-			sphere.color_ = 0xffffffff;
+			line.color_ = 0xffffffff;
 		}
 
 		///
@@ -113,8 +97,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
 
-		// 球
-		sphere.Draw(16);
+		// 線
+		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), line.color_);
 
 		// 平面
 		plane.Draw();

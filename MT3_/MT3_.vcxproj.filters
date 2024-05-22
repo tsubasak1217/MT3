@@ -164,5 +164,8 @@
     <ClInclude Include="Lib\Shapes\Plane.h">
       <Filter>Lib\Shapes</Filter>
     </ClInclude>
+    <ClInclude Include="Lib\Math\Enums.h">
+      <Filter>Lib\Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

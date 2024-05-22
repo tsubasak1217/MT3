@@ -11,6 +11,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include "Enums.h"
 #include "Easing.h"
 #include "VectorN.h"
 #include "MatrixNxN.h"
@@ -209,6 +210,8 @@ int IsHitBox_BallDirection(Vec2 boxCenter, Vec2 ballPos, Vec2 boxSize, float bal
 bool Collision_Sphere_Sphere(Sphere sphere1, Sphere sphere2);
 // 球と平面の当たり判定
 bool Collision_Sphere_Plane(const Sphere& sphere, const Plane& plane);
+// 線分と平面の当たり判定
+bool Collision_Plane_Line(const Plane& plane, const Line& line);
 
 //================================================================
 //                     オリジナル描画関数
@@ -261,7 +264,7 @@ void DrawPlane(
 );
 
 void DrawSegment(
-	const Segment& seg, 
+	const Line& seg, 
 	const Matrix4x4& viewPjojectionMatrix,
 	const Matrix4x4& viewportMatrix,
 	uint32_t color

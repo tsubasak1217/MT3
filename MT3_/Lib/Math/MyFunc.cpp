@@ -1558,6 +1558,46 @@ bool Collision_Sphere_Plane(const Sphere& sphere, const Plane& plane)
 	return fabsf(projectionVec[1] - projectionVec[0]) <= sphere.radius_;
 }
 
+bool Collision_Plane_Line(const Plane& plane, const Line& line)
+{
+	float dot = Dot(plane.normalVector_, line.end_ - line.origin_);
+
+	// 線と面が平行の場合
+	if(dot == 0){ return false; }
+
+	float t = (plane.distance_ - Dot(line.origin_, plane.normalVector_));
+
+	if(line.type_ == SEGMENT){// 線分の場合
+
+		float t2 = (plane.distance_ - Dot(line.end_, plane.normalVector_));
+
+		if((t >= 0.0f && t2 < 0.0f) or (t < 0.0f && t2 >= 0.0f)){
+			return true;
+		} else{
+			return false;
+		}
+
+	} else if(line.type_ == RAY){// 半直線の場合
+
+		if(t < 0.0f){
+			if(dot < 0.0f){
+				return true;
+			} else{
+				return false;
+			}
+		} else{
+			if(dot >= 0.0f){
+				return true;
+			} else{
+				return false;
+			}
+		}
+	}
+
+	// 直線ならここでは必ず当たっている
+	return true;
+}
+
 
 //================================================================
 //                     オリジナル描画関数
@@ -2290,7 +2330,7 @@ void DrawSphere(
 	}
 }
 
-void DrawPlane(const Vec3& centerPos, const Vec3& rotate, float size, Matrix4x4 viewProjectionMat,Matrix4x4 viewportMat){
+void DrawPlane(const Vec3& centerPos, const Vec3& rotate, float size, Matrix4x4 viewProjectionMat, Matrix4x4 viewportMat){
 
 	Vec3 vertex[4] = {
 		{-size * 0.5f,0.0f,size * 0.5f},
@@ -2319,7 +2359,7 @@ void DrawPlane(const Vec3& centerPos, const Vec3& rotate, float size, Matrix4x4 
 }
 
 void DrawSegment(
-	const Segment& seg,
+	const Line& seg,
 	const Matrix4x4& viewPjojectionMatrix,
 	const Matrix4x4& viewportMatrix,
 	uint32_t color){
@@ -2337,6 +2377,18 @@ void DrawSegment(
 		int(end.x),
 		int(end.y),
 		color
+	);
+
+	Novice::DrawEllipse(
+		int(origin.x),
+		int(origin.y),
+		3, 3, 0.0f, 0xff0000ff, kFillModeSolid
+	);
+
+	Novice::DrawEllipse(
+		int(end.x),
+		int(end.y),
+		3, 3, 0.0f, 0x0000ffff, kFillModeSolid
 	);
 }
 

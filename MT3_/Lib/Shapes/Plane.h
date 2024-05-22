@@ -7,6 +7,7 @@ struct Plane{
 	Vec3 rotate_;
 	float size_;
 	Vec3 normalVector_;
+	float distance_;
 
 private:
 	Matrix4x4* viewPrpjectionMatrix_ = nullptr;
