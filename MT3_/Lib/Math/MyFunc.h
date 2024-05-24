@@ -15,9 +15,10 @@
 #include "Easing.h"
 #include "VectorN.h"
 #include "MatrixNxN.h"
-#include "Segment.h"
+#include "Line.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Triangle.h"
 
 //何もしない関数
 void Void();
@@ -78,7 +79,7 @@ enum VIEWMODE {
 	kScreen,
 	kWorld
 };
-Vec3 Cross(Vec3 v1, Vec3 v2,bool kViewMode);
+Vec3 Cross(Vec3 v1, Vec3 v2, bool kViewMode);
 
 
 //線と線の交点を求める関数
@@ -141,7 +142,7 @@ Matrix4x4 IdentityMat4();
 // 拡大縮小行列を作る関数
 Matrix3x3 ScaleMatrix(float scaleX, float scaleY);
 Matrix3x3 ScaleMatrix(const Vec2& scale);
-Matrix4x4 ScaleMatrix(float scaleX, float scaleY,float scaleZ);
+Matrix4x4 ScaleMatrix(float scaleX, float scaleY, float scaleZ);
 Matrix4x4 ScaleMatrix(const Vec3& scale);
 
 // 回転行列を作る関数
@@ -173,15 +174,15 @@ Matrix4x4 Transpose(const Matrix4x4& matrix);
 
 //正射影行列を求める関数
 Matrix3x3 OrthoMatrix(float left, float right, float top, float bottom);
-Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom,float znear,float zfar);
+Matrix4x4 OrthoMatrix(float left, float right, float top, float bottom, float znear, float zfar);
 
 // 透視投影行列(視錐台)を求める関数
 float AspectRatio(float windowWidth, float windowHeight);
-Matrix4x4 PerspectiveMatrix(float fovY,float aspectRatio,float znear,float zfar);
+Matrix4x4 PerspectiveMatrix(float fovY, float aspectRatio, float znear, float zfar);
 
 //ビューポート変換行列を求める関数
 Matrix3x3 ViewportMatrix(const Vec2& size, const Vec2& LeftTop);
-Matrix4x4 ViewportMatrix(const Vec2& size, const Vec2& LeftTop,float minDepth,float maxDepth);
+Matrix4x4 ViewportMatrix(const Vec2& size, const Vec2& LeftTop, float minDepth, float maxDepth);
 
 //レンダリングパイプライン作る関数
 Matrix3x3 WvpVpMatrix(
@@ -212,6 +213,8 @@ bool Collision_Sphere_Sphere(Sphere sphere1, Sphere sphere2);
 bool Collision_Sphere_Plane(const Sphere& sphere, const Plane& plane);
 // 線分と平面の当たり判定
 bool Collision_Plane_Line(const Plane& plane, const Line& line);
+// 三角形と線の当たり判定
+bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
 
 //================================================================
 //                     オリジナル描画関数
@@ -231,7 +234,7 @@ namespace My {
 	void DrawTriangle(Vec2 center, float radius, float theta, int color);
 	void DrawTriangleWire(Vec2 center, float radius, float theta, int color);
 	//線
-	void DrawLine(const Vec2& pos1, const Vec2& pos2,int color);
+	void DrawLine(const Vec2& pos1, const Vec2& pos2, int color);
 	//星
 	void DrawStar(Vec2 center, float radius, Vec2 scale, float theta, int color);
 	void DrawStarWire(Vec2 center, float radius, Vec2 scale, float theta, int color);
@@ -263,8 +266,24 @@ void DrawPlane(
 	Matrix4x4 viewportMat
 );
 
+// 三角平面を描画する関数
+void DrawTrianglePlane(
+	const Triangle& triangle,
+	Matrix4x4 viewProjectionMat,
+	Matrix4x4 viewportMat
+);
+
+void DrawHitPos_Plane_Line(
+	const Vec3& normal,
+	const Vec3& point,
+	const Line& line,
+	Matrix4x4 viewProjectionMat,
+	Matrix4x4 viewportMat
+);
+
+// 線を描画する関数
 void DrawSegment(
-	const Line& seg, 
+	const Line& seg,
 	const Matrix4x4& viewPjojectionMatrix,
 	const Matrix4x4& viewportMatrix,
 	uint32_t color

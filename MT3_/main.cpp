@@ -22,20 +22,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	Line line({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f },SEGMENT);
-	Plane plane(
-		{ 0.0f,1.0f,0.0f },
-		{ 0.0f,0.0f,0.0f },
-		2.0f
-	);
+	Line line({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
 
-	plane.SetVpVp(
-		renderMat.GetViewProjectionMat(),
-		renderMat.GetViewportMat()
+	Triangle triangle(
+		{ -1.0f,0.0f,0.0f },
+		{ 0.5f,1.0f,0.0f },
+		{ 1.0f,0.0f,0.0f }
 	);
 
 	line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
-
+	triangle.Init({ -1.0f,0.0f,0.0f },
+		{ 0.5f,1.0f,0.0f },
+		{ 1.0f,0.0f,0.0f }
+	);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -58,29 +57,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		ImGui::Begin("Line");
 		ImGui::DragFloat3("origin", &line.origin_.x, 0.01f);
-		ImGui::DragFloat3("end", &line.end_.x,0.01f);
+		ImGui::DragFloat3("end", &line.end_.x, 0.01f);
 		ImGui::InputInt("LineType", &line.type_);
 		ImGui::Text("Type: SEGMENT = 0, RAY = 1, LINE = 2");
 		ImGui::End();
 
-		ImGui::Begin("Plane");
-		ImGui::DragFloat3("translate", &plane.centerPos_.x, 0.01f);
-		ImGui::DragFloat3("rotate", &plane.rotate_.x, 3.14f * 0.005f);
+		ImGui::Begin("Triangle");
+		ImGui::DragFloat3("vertex[0]", &triangle.vertex_[0].x, 0.01f);
+		ImGui::DragFloat3("vertex[1]", &triangle.vertex_[1].x, 0.01f);
+		ImGui::DragFloat3("vertex[2]", &triangle.vertex_[2].x, 0.01f);
 		ImGui::End();
 
 		// Rキーでリセット
 		if(keys[DIK_R]) {
 			camera->Init();
-			line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f },SEGMENT);
-
+			line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
+			triangle.Init({ -1.0f,0.0f,0.0f },
+				{ 0.5f,1.0f,0.0f },
+				{ 1.0f,0.0f,0.0f }
+			);
 		}
 
 		// レンダリング用の行列とか更新
 		camera->Update();
 		renderMat.Update();
-		plane.Update();
 
-		if(Collision_Plane_Line(plane,line)){
+		if(Collision_Triangle_Line(triangle, line)){
 			line.color_ = 0xff0000ff;
 		} else{
 			line.color_ = 0xffffffff;
@@ -101,7 +103,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), line.color_);
 
 		// 平面
-		plane.Draw();
+		DrawTrianglePlane(
+			triangle,
+			*renderMat.GetViewProjectionMat(),
+			*renderMat.GetViewportMat()
+		);
+
+		DrawHitPos_Plane_Line(
+			Normalize(Cross(triangle.vertex_[1] - triangle.vertex_[0], triangle.vertex_[2] - triangle.vertex_[1], kScreen)),
+			triangle.vertex_[0],
+			line,
+			*renderMat.GetViewProjectionMat(),
+			*renderMat.GetViewportMat()
+		);
 
 		///
 		/// ↑描画処理ここまで

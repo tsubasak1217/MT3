@@ -1598,6 +1598,76 @@ bool Collision_Plane_Line(const Plane& plane, const Line& line)
 	return true;
 }
 
+bool Collision_Triangle_Line(const Triangle& triangle, const Line& line)
+{
+	Vec3 normal = Normalize(Cross(triangle.vertex_[1] - triangle.vertex_[0], triangle.vertex_[2] - triangle.vertex_[1],kScreen));
+	Vec3 dif = line.end_ - line.origin_;
+	float dot = Dot(normal, dif);
+
+	if(dot == 0.0f){ return false; }// 平行な場合当たらない
+	
+	// tを求める
+	float distance = Dot(triangle.vertex_[0] - line.origin_, normal);
+	float t = distance / dot;
+
+	// 衝突点
+	Vec3 hitPos = (dif * t) + line.origin_;
+
+	// 三角形の各頂点から見たすべてのクロス積を計算
+	Vec3 cross[3] = {
+		Cross(triangle.vertex_[1] - triangle.vertex_[0],hitPos - triangle.vertex_[1],kScreen),
+		Cross(triangle.vertex_[2] - triangle.vertex_[1],hitPos - triangle.vertex_[2],kScreen),
+		Cross(triangle.vertex_[0] - triangle.vertex_[2],hitPos - triangle.vertex_[0],kScreen)
+	};
+
+	// ひとつでも巻いている向きが違えばfalse
+	float triDot[3] = {
+		Dot(cross[0], cross[1]),
+		Dot(cross[0], cross[2]),
+		Dot(cross[1], cross[2])
+	};
+
+	if(triDot[0] < 0.0f){ return false; }
+	if(triDot[1] < 0.0f){ return false; }
+	if(triDot[2] < 0.0f){ return false; }
+
+	// 線の二点が面のどちら側にいるか
+	float pointDistance[2] = {
+		distance,
+		distance - Dot(line.end_ - line.origin_,normal),
+	};
+
+	if(line.type_ == RAY){
+
+		if(pointDistance[0] >= 0.0f){
+			if(pointDistance[1] >= pointDistance[0]){
+				return false;
+			}
+		} else{
+			if(pointDistance[1] < pointDistance[0]){
+				return false;
+			}
+		}
+
+	} else if(line.type_ == SEGMENT){
+		
+		// 二点がどちらも同じ側にいたら当たっていない
+		if(pointDistance[0] >= 0.0f){
+			if(pointDistance[1] >= 0.0f){
+				return false;
+			}
+		} else{
+			if(pointDistance[1] < 0.0f){
+				return false;
+			}
+		}
+
+	}
+
+	// ここまで来たら衝突
+	return true;
+}
+
 
 //================================================================
 //                     オリジナル描画関数
@@ -2354,6 +2424,55 @@ void DrawPlane(const Vec3& centerPos, const Vec3& rotate, float size, Matrix4x4 
 			int(vertex[(i + 1) % 4].x),
 			int(vertex[(i + 1) % 4].y),
 			0xffffffff
+		);
+	}
+}
+
+void DrawTrianglePlane(const Triangle& triangle, Matrix4x4 viewProjectionMat, Matrix4x4 viewportMat)
+{
+	Vec3 vertex[3] = {
+	triangle.vertex_[0],
+	triangle.vertex_[1],
+	triangle.vertex_[2]
+	};
+
+	Matrix4x4 vpVpMat = Multiply(viewProjectionMat, viewportMat);
+	for(int i = 0; i < 3; i++){
+		vertex[i] = Multiply(vertex[i], vpVpMat);
+	}
+
+
+	for(int i = 0; i < 3; i++){
+		Novice::DrawLine(
+			int(vertex[i].x),
+			int(vertex[i].y),
+			int(vertex[(i + 1) % 3].x),
+			int(vertex[(i + 1) % 3].y),
+			triangle.color_
+		);
+	}
+}
+
+void DrawHitPos_Plane_Line(const Vec3& normal, const Vec3& point, const Line& line, Matrix4x4 viewProjectionMat, Matrix4x4 viewportMat)
+{
+	Vec3 dif = line.end_ - line.origin_;
+	float dot = Dot(normal, dif);
+
+	// tを求める
+	float distance = Dot(point - line.origin_, normal);
+	float t = distance / dot;
+
+	// 衝突点
+	Vec3 hitPos = (dif * t) + line.origin_;
+
+	Matrix4x4 vpVpMat = Multiply(viewProjectionMat, viewportMat);
+	hitPos = Multiply(hitPos, vpVpMat);
+
+	if(dot){
+		Novice::DrawEllipse(
+			int(hitPos.x),
+			int(hitPos.y),
+			8, 8, 0.0f, 0xff0000ff, kFillModeSolid
 		);
 	}
 }

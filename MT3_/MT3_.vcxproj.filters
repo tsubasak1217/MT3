@@ -158,7 +158,7 @@
     <ClInclude Include="Object\Sphere.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="Lib\Shapes\Segment.h">
+    <ClInclude Include="Lib\Shapes\Line.h">
       <Filter>Lib\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="Lib\Shapes\Plane.h">
@@ -166,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="Lib\Math\Enums.h">
       <Filter>Lib\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Shapes\Triangle.h">
+      <Filter>Lib\Shapes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
