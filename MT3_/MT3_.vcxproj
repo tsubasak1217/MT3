@@ -112,8 +112,8 @@
     <ClCompile Include="Lib\Math\MyFunc.cpp" />
     <ClCompile Include="Lib\Shapes\AABB.cpp" />
     <ClCompile Include="Lib\Shapes\Plane.cpp" />
+    <ClCompile Include="Lib\Shapes\Sphere.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Object\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3D\Camera.h" />
@@ -146,10 +146,10 @@
     <ClInclude Include="Lib\Shapes\AABB.h" />
     <ClInclude Include="Lib\Shapes\Plane.h" />
     <ClInclude Include="Lib\Shapes\Line.h" />
+    <ClInclude Include="Lib\Shapes\Sphere.h" />
     <ClInclude Include="Lib\Shapes\Triangle.h" />
     <ClInclude Include="Lib\Tensor\MatrixNxN.h" />
     <ClInclude Include="Lib\Tensor\VectorN.h" />
-    <ClInclude Include="Object\Sphere.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -219,6 +219,8 @@ bool Collision_Plane_Line(const Plane& plane, const Line& line);
 bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
 // AABB同士の当たり判定
 bool Collision_AABB_AABB(const AABB& aabb1, const AABB& aabb2);
+// AABBと正球の当たり判定
+bool Collision_AABB_Sphere(const AABB& aabb, const EqualSphere& sphere);
 
 //================================================================
 //                     オリジナル描画関数

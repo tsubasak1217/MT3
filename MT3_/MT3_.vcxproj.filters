@@ -65,13 +65,13 @@
     <ClCompile Include="3D\RenderMatrixes.cpp">
       <Filter>3D</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Sphere.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Lib\Shapes\Plane.cpp">
       <Filter>Lib\Shapes</Filter>
     </ClCompile>
     <ClCompile Include="Lib\Shapes\AABB.cpp">
+      <Filter>Lib\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\Shapes\Sphere.cpp">
       <Filter>Lib\Shapes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,9 +158,6 @@
     <ClInclude Include="3D\RenderMatrixes.h">
       <Filter>3D</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Sphere.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="Lib\Shapes\Line.h">
       <Filter>Lib\Shapes</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
       <Filter>Lib\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="Lib\Shapes\AABB.h">
+      <Filter>Lib\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Lib\Shapes\Sphere.h">
       <Filter>Lib\Shapes</Filter>
     </ClInclude>
   </ItemGroup>

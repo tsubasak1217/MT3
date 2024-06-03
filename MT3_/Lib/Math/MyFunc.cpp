@@ -1680,6 +1680,17 @@ bool Collision_AABB_AABB(const AABB& aabb1, const AABB& aabb2)
 	return true;
 }
 
+bool Collision_AABB_Sphere(const AABB& aabb, const EqualSphere& sphere)
+{
+	Vec3 closestPos;
+	closestPos.x = std::clamp(sphere.translate_.x, *aabb.min.x, *aabb.max.x);
+	closestPos.y = std::clamp(sphere.translate_.y, *aabb.min.y, *aabb.max.y);
+	closestPos.z = std::clamp(sphere.translate_.z, *aabb.min.z, *aabb.max.z);
+	float dist = Length(sphere.translate_ - closestPos);
+
+	return dist <= sphere.radius_ ? true : false;
+}
+
 
 //================================================================
 //                     オリジナル描画関数
