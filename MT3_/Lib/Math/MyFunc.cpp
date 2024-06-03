@@ -1600,12 +1600,12 @@ bool Collision_Plane_Line(const Plane& plane, const Line& line)
 
 bool Collision_Triangle_Line(const Triangle& triangle, const Line& line)
 {
-	Vec3 normal = Normalize(Cross(triangle.vertex_[1] - triangle.vertex_[0], triangle.vertex_[2] - triangle.vertex_[1],kScreen));
+	Vec3 normal = Normalize(Cross(triangle.vertex_[1] - triangle.vertex_[0], triangle.vertex_[2] - triangle.vertex_[1], kScreen));
 	Vec3 dif = line.end_ - line.origin_;
 	float dot = Dot(normal, dif);
 
 	if(dot == 0.0f){ return false; }// 平行な場合当たらない
-	
+
 	// tを求める
 	float distance = Dot(triangle.vertex_[0] - line.origin_, normal);
 	float t = distance / dot;
@@ -1650,7 +1650,7 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line)
 		}
 
 	} else if(line.type_ == SEGMENT){
-		
+
 		// 二点がどちらも同じ側にいたら当たっていない
 		if(pointDistance[0] >= 0.0f){
 			if(pointDistance[1] >= 0.0f){
@@ -1665,6 +1665,18 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line)
 	}
 
 	// ここまで来たら衝突
+	return true;
+}
+
+bool Collision_AABB_AABB(const AABB& aabb1, const AABB& aabb2)
+{
+	if(*aabb1.min.x > *aabb2.max.x){ return false; }
+	if(*aabb1.max.x < *aabb2.min.x){ return false; }
+	if(*aabb1.min.y > *aabb2.max.y){ return false; }
+	if(*aabb1.max.y < *aabb2.min.y){ return false; }
+	if(*aabb1.min.z > *aabb2.max.z){ return false; }
+	if(*aabb1.max.z < *aabb2.min.z){ return false; }
+
 	return true;
 }
 
@@ -2508,6 +2520,91 @@ void DrawSegment(
 		int(end.x),
 		int(end.y),
 		3, 3, 0.0f, 0x0000ffff, kFillModeSolid
+	);
+}
+
+// AABBの描画関数
+void DrawAABB(
+	const AABB& aabb,
+	const Matrix4x4& viewPjojectionMatrix,
+	const Matrix4x4& viewportMatrix,
+	uint32_t color
+){
+	// Z-を手前として手前側から左上⇒右上⇒左下⇒右下の順で格納する
+	Vec3 calculatedPos[8] = {
+		// 手前
+		{*aabb.min.x,*aabb.max.y,*aabb.min.z},// LT
+		{*aabb.max.x,*aabb.max.y,*aabb.min.z},// RT
+		{*aabb.min.x,*aabb.min.y,*aabb.min.z},// LB
+		{*aabb.max.x,*aabb.min.y,*aabb.min.z},// RB
+		// 奥
+		{*aabb.min.x,*aabb.max.y,*aabb.max.z},// LT
+		{*aabb.max.x,*aabb.max.y,*aabb.max.z},// RT
+		{*aabb.min.x,*aabb.min.y,*aabb.max.z},// LB
+		{*aabb.max.x,*aabb.min.y,*aabb.max.z} // RB
+	};
+
+	// レンダリング用の行列(ローカル頂点*SRTではなく直接の座標指定なのでワールド行列の作成は無し)
+	Matrix4x4 wvpVpMatrix = Multiply(viewPjojectionMatrix, viewportMatrix);
+
+	// 座標変換
+	for(int i = 0; i < 8; i++){
+		calculatedPos[i] = Multiply(calculatedPos[i], wvpVpMatrix);
+	}
+
+	// 描画
+	for(int i = 0; i < 2; i++){
+		// x方向の線
+		My::DrawLine(
+			{ calculatedPos[i * 2].x,calculatedPos[i * 2].y },
+			{ calculatedPos[(i * 2) + 1].x,calculatedPos[(i * 2)+ 1].y },
+			color
+		);
+
+		My::DrawLine(
+			{ calculatedPos[i * 2 + 4].x,calculatedPos[i * 2 + 4].y },
+			{ calculatedPos[((i * 2) + 4) + 1].x,calculatedPos[((i * 2) + 4) + 1].y },
+			color
+		);
+
+		// y方向の線
+		My::DrawLine(
+			{ calculatedPos[i].x,calculatedPos[i].y },
+			{ calculatedPos[i + 2].x,calculatedPos[i + 2].y },
+			color
+		);
+
+		My::DrawLine(
+			{ calculatedPos[i + 4].x,calculatedPos[i + 4].y },
+			{ calculatedPos[(i + 4) + 2].x,calculatedPos[(i + 4) + 2].y },
+			color
+		);
+
+		// z方向の線
+		My::DrawLine(
+			{ calculatedPos[i].x,calculatedPos[i].y},
+			{ calculatedPos[i + 4].x,calculatedPos[i + 4].y },
+			color
+		);
+
+		My::DrawLine(
+			{ calculatedPos[i + 2].x,calculatedPos[i + 2].y },
+			{ calculatedPos[(i + 2) + 4].x,calculatedPos[(i + 2) + 4].y},
+			color
+		);
+	}
+
+	// 分かりやすいように表示
+	Novice::DrawEllipse(
+		int(calculatedPos[2].x),
+		int(calculatedPos[2].y),
+		6, 6, 0.0f, 0x0000ffff, kFillModeSolid
+	);
+
+	Novice::DrawEllipse(
+		int(calculatedPos[5].x),
+		int(calculatedPos[5].y),
+		6, 6, 0.0f, 0xff0000ff, kFillModeSolid
 	);
 }
 

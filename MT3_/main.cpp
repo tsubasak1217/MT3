@@ -22,19 +22,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	Line line({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
-
-	Triangle triangle(
-		{ -1.0f,0.0f,0.0f },
-		{ 0.5f,1.0f,0.0f },
-		{ 1.0f,0.0f,0.0f }
-	);
-
-	line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
-	triangle.Init({ -1.0f,0.0f,0.0f },
-		{ 0.5f,1.0f,0.0f },
-		{ 1.0f,0.0f,0.0f }
-	);
+	AABB aabb[2] = { 
+		AABB({ -2.0f, 0.0f, -2.0f }, { -1.0f,1.0f,-1.0f }),
+		AABB({ 1.0f, 0.0f, 1.0f }, { 2.0f,1.0f,2.0f })
+	};
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -55,37 +46,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Text("[ CLICK WHEEL & MOVE MOUSE ] -> moveCamera");
 		ImGui::End();
 
-		ImGui::Begin("Line");
-		ImGui::DragFloat3("origin", &line.origin_.x, 0.01f);
-		ImGui::DragFloat3("end", &line.end_.x, 0.01f);
-		ImGui::InputInt("LineType", &line.type_);
-		ImGui::Text("Type: SEGMENT = 0, RAY = 1, LINE = 2");
+		ImGui::Begin("AABB");
+		ImGui::Text("AABB[0]");
+		ImGui::DragFloat3("point1##0", &aabb[0].point[0].x,0.1f);
+		ImGui::DragFloat3("point2##0", &aabb[0].point[1].x, 0.1f);
+		ImGui::Text("AABB[1]");
+		ImGui::DragFloat3("point1##1", &aabb[1].point[0].x, 0.1f);
+		ImGui::DragFloat3("point2##1", &aabb[1].point[1].x, 0.1f);
 		ImGui::End();
 
-		ImGui::Begin("Triangle");
-		ImGui::DragFloat3("vertex[0]", &triangle.vertex_[0].x, 0.01f);
-		ImGui::DragFloat3("vertex[1]", &triangle.vertex_[1].x, 0.01f);
-		ImGui::DragFloat3("vertex[2]", &triangle.vertex_[2].x, 0.01f);
-		ImGui::End();
+		for(int i = 0; i < 2; i++){
+			aabb[i].UpdateMinMax();
+		}
+
 
 		// Rキーでリセット
 		if(keys[DIK_R]) {
 			camera->Init();
-			line.Init({ -1.0f,-0.5f,-0.5f }, { 1.0f,0.5f,0.5f }, SEGMENT);
-			triangle.Init({ -1.0f,0.0f,0.0f },
-				{ 0.5f,1.0f,0.0f },
-				{ 1.0f,0.0f,0.0f }
-			);
 		}
 
 		// レンダリング用の行列とか更新
 		camera->Update();
 		renderMat.Update();
 
-		if(Collision_Triangle_Line(triangle, line)){
-			line.color_ = 0xff0000ff;
+		if(Collision_AABB_AABB(aabb[0],aabb[1])){
+			aabb[0].color = 0xff0000ff;
 		} else{
-			line.color_ = 0xffffffff;
+			aabb[0].color = 0xffffffff;
 		}
 
 		///
@@ -99,23 +86,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
 
-		// 線
-		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), line.color_);
-
-		// 平面
-		DrawTrianglePlane(
-			triangle,
-			*renderMat.GetViewProjectionMat(),
-			*renderMat.GetViewportMat()
-		);
-
-		DrawHitPos_Plane_Line(
-			Normalize(Cross(triangle.vertex_[1] - triangle.vertex_[0], triangle.vertex_[2] - triangle.vertex_[1], kScreen)),
-			triangle.vertex_[0],
-			line,
-			*renderMat.GetViewProjectionMat(),
-			*renderMat.GetViewportMat()
-		);
+		for(int i = 0; i < 2; i++){
+			DrawAABB(aabb[i], *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(),aabb[i].color);
+		}
 
 		///
 		/// ↑描画処理ここまで

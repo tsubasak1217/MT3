@@ -15,10 +15,12 @@
 #include "Easing.h"
 #include "VectorN.h"
 #include "MatrixNxN.h"
+
 #include "Line.h"
 #include "Sphere.h"
 #include "Plane.h"
 #include "Triangle.h"
+#include "AABB.h"
 
 //何もしない関数
 void Void();
@@ -215,6 +217,8 @@ bool Collision_Sphere_Plane(const Sphere& sphere, const Plane& plane);
 bool Collision_Plane_Line(const Plane& plane, const Line& line);
 // 三角形と線の当たり判定
 bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
+// AABB同士の当たり判定
+bool Collision_AABB_AABB(const AABB& aabb1, const AABB& aabb2);
 
 //================================================================
 //                     オリジナル描画関数
@@ -284,6 +288,14 @@ void DrawHitPos_Plane_Line(
 // 線を描画する関数
 void DrawSegment(
 	const Line& seg,
+	const Matrix4x4& viewPjojectionMatrix,
+	const Matrix4x4& viewportMatrix,
+	uint32_t color
+);
+
+// AABBを描画する関数
+void DrawAABB(
+	const AABB& aabb,
 	const Matrix4x4& viewPjojectionMatrix,
 	const Matrix4x4& viewportMatrix,
 	uint32_t color

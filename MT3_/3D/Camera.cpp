@@ -24,16 +24,20 @@ void Camera::Init() {
 
 void Camera::Update() {
 	//
+	preMousePos_ = mousePos_;
 	Novice::GetMousePosition(&mousePos_.x, &mousePos_.y);
 	direction_ = Multiply({ 0.0f,0.0f,1.0f }, RotateMatrix(rotate_));
 
-	if(Novice::IsTriggerMouse(2)){
+	// マウス右のトリガー時にクリック座標を保存
+	if(Novice::IsTriggerMouse(1)){
 		Novice::GetMousePosition(&clickPos_.x, &clickPos_.y);
 		tmpTranslate_ = translate_;
 		tmpRotate_ = rotate_;
 	}
 
-	if(Novice::IsPressMouse(2)){
+	// カメラの回転操作
+	if(Novice::IsPressMouse(1)){
+		// クリック位置から縦軸と横軸の移動量を得る
 		float phi = rotateRate_ * (clickPos_.x - mousePos_.x);
 		float theta = rotateRate_ * (clickPos_.y - mousePos_.y);
 
@@ -46,11 +50,32 @@ void Camera::Update() {
 		rotate_.y = tmpRotate_.y - phi;
 		//rotate_.x = tmpRotate_.x + theta;
 
-
 		lerpRotate_ = rotate_;
 		lerpTranslate_ = translate_;
 
+	}
+
+	// カメラの移動操作(上下移動だけする)
+	if(Novice::IsPressMouse(2)){
+		// マウスの移動ベクトル
+		Vec3 dif = {
+			float(preMousePos_.x - mousePos_.x),
+			float(preMousePos_.y - mousePos_.y) * - 1.0f,
+			0.0f
+		};
+
+		// XY軸回転だけ取り出した回転行列
+		Matrix4x4 tmpRotateMat = RotateMatrix({ rotate_.x,rotate_.y ,0.0f });
+
+		// XY軸回転を加味した移動ベクトルを算出
+		Vec3 tmpMoveVec = Multiply(dif, tmpRotateMat) * 0.005f;
+
+		// translateの更新
+		translate_ += tmpMoveVec;
+		lerpTranslate_ = translate_;
+
 	} else{
+		// ホイール押してないときだけホイールでのスケール操作が可能
 		lerpTranslate_ += direction_ * (float(Novice::GetWheel() > 0) * 0.5f);
 		lerpTranslate_ -= direction_ * (float(Novice::GetWheel() < 0) * 0.5f);
 	}

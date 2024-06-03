@@ -220,6 +220,14 @@ struct Vector3 final {
 using Vec3 = Vector3<float>;
 
 template<typename T>
+struct Pointer3 final {
+	T* x = nullptr;
+	T* y = nullptr;
+	T* z = nullptr;
+};
+using Ptr3 = Pointer3<float>;
+
+template<typename T>
 struct Vector4 final {
 	T x = 0;
 	T y = 0;
