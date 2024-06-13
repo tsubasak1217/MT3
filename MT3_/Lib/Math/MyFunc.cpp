@@ -1694,50 +1694,6 @@ bool Collision_AABB_Sphere(const AABB& aabb, const EqualSphere& sphere)
 bool Collision_AABB_Line(AABB aabb, const Line& line)
 {
 
-	//Vec3 dif = line.end_ - line.origin_;
-	//Vec3 hitPos[2][4];
-	//Vec3 normal[2][4] = {
-	//	{// XY平面
-	//	{1.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},// X
-	//	{0.0f,1.0f,0.0f},{0.0f,1.0f,0.0f}// Y
-	//	},
-	//	{// XZ平面
-	//	{1.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},// X
-	//	{0.0f,0.0f,1.0f},{0.0f,0.0f,1.0f}// Z
-	//	}
-	//};
-
-	//float dot[2][4];
-	//int index[2][4];
-
-	//for(int i = 0; i < 2; i++){
-	//	for(int j = 0; j < 4; j++){
-	//		dot[i][j] = Dot(normal[i][j], dif);
-
-	//		// tを求める
-	//		Vec3 point;
-	//		if(j % 2 == 0){
-	//			point = { *aabb.min.x,*aabb.min.y, *aabb.min.z };
-	//		} else{
-	//			point = { *aabb.max.x,*aabb.max.y, *aabb.max.z };
-	//		}
-
-	//		float distance = Dot(point - line.origin_, normal[i][j]);
-	//		float t = distance / dot[i][j];
-
-	//		// 衝突点
-	//		hitPos[i][j] = (dif * t) + line.origin_;
-
-	//		// 要素番号
-	//		index[i][j] = j;
-	//	}
-	//}
-
-	//if()
-
-	//aabb;
-	//line;
-
 	float tmin = 0.0f;
 	float tmax = 1.0f;
 

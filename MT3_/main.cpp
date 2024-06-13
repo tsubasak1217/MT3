@@ -55,11 +55,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Text("[ CLICK WHEEL & MOVE MOUSE ] -> moveCamera");
 		ImGui::End();
 
-		//ImGui::Begin("AABB");
-		//ImGui::DragFloat3("point1##0", &aabb.point[0].x,0.1f);
-		//ImGui::DragFloat3("point2##0", &aabb.point[1].x, 0.1f);
-		//ImGui::End();
-
 		ImGui::Begin("OBB");
 		ImGui::DragFloat3("center", &obb.center.x, 0.1f);
 		ImGui::DragFloat3("rotate", &obb.rotate.x, 0.005f);
