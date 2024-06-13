@@ -1782,20 +1782,21 @@ bool Collision_AABB_Line(AABB aabb, const Line& line)
 	return tmax >= tmin;
 }
 
-bool Collision_OBB_Sphere(OBB obb, const EqualSphere& sphere)
+bool Collision_OBB_Sphere(OBB obb, EqualSphere sphere)
 {
 	// AABBに戻したOBB
 	AABB OBBlocal(obb.size * - 1.0f, obb.size);
 
 	// OBBの回転を打ち消す行列
-	Matrix4x4 inverseOBBrotate = InverseMatrix(RotateMatrix(obb.rotate));
+	Matrix4x4 inverseOBB = InverseMatrix(AffineMatrix({1.0f,1.0f,1.0f}, obb.rotate,obb.center));
 
-	EqualSphere moved(
-		sphere.radius_,sphere.scale_,
-		Multiply(sphere.translate_,inverseOBBrotate)
-	);
+	// OBBに合わせて戻した球の作成
+	EqualSphere moved;
+	moved = sphere;
+	moved.translate_ = Multiply(sphere.translate_, inverseOBB);
 
-	return false;
+	// 判定
+	return Collision_AABB_Sphere(OBBlocal,moved);
 }
 
 

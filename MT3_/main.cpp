@@ -66,9 +66,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("size", &obb.size.x, 0.01f);
 		ImGui::End();
 
-		ImGui::Begin("Line");
-		ImGui::DragFloat3("origin", &line.origin_.x, 0.05f);
-		ImGui::DragFloat3("end", &line.end_.x, 0.05f);
+		ImGui::Begin("Sphere");
+		ImGui::DragFloat3("translate", &sphere.translate_.x, 0.05f);
+		ImGui::DragFloat("size", &sphere.radius_, 0.05f);
 		ImGui::End();
 
 
@@ -102,8 +102,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// AABB
 		DrawOBB(obb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), obb.color);
 
-		// Line
-		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat());
+		// sphere
+		sphere.Draw(subdivision);
 
 		///
 		/// ↑描画処理ここまで
