@@ -6,8 +6,7 @@
 #include "Plane.h"
 #include "RenderMatrixes.h"
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_06";
-
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_07";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -23,12 +22,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	RenderMatrixes renderMat(camera.get());
 
 	AABB aabb({ -2.0f, 0.0f, -2.0f }, { -1.0f,1.0f,-1.0f });
-	EqualSphere sphere(
-		0.5f, 1.0f, { 0.0f,0.0f,0.0f }, { 0.0f,0.5f,0.0f },
-		renderMat.GetViewProjectionMat(), renderMat.GetViewportMat()
+	OBB obb(
+		{ -1.5f, 0.5f, -1.5f },//center
+		{ 0.1f, 0.2f, 1.3f },//rotate
+		{ 1.0f, 1.0f, 1.0f }//size
 	);
 
-	int subdivision = 16;
+	Line line({ 0.0f,0.0f,0.0f }, { 0.0f,0.5f,0.0f },SEGMENT);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -54,9 +54,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("point2##0", &aabb.point[1].x, 0.1f);
 		ImGui::End();
 
-		ImGui::Begin("Sphere");
-		ImGui::DragFloat("radius", &sphere.radius_, 0.05f);
-		ImGui::DragFloat3("translate", &sphere.translate_.x, 0.1f);
+		ImGui::Begin("Line");
+		ImGui::DragFloat3("origin", &line.origin_.x, 0.05f);
+		ImGui::DragFloat3("end", &line.end_.x, 0.05f);
 		ImGui::End();
 
 		aabb.UpdateMinMax();
@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		camera->Update();
 		renderMat.Update();
 
-		if(Collision_AABB_Sphere(aabb,sphere)){
+		if(Collision_AABB_Line(aabb,line)){
 			aabb.color = 0xff0000ff;
 		} else{
 			aabb.color = 0xffffffff;
@@ -91,9 +91,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// AABB
 		DrawAABB(aabb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(),aabb.color);
+		//DrawOBB(obb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), aabb.color);
 
-		// Sphere
-		sphere.Draw(subdivision);
+		// Line
+		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat());
 
 		///
 		/// ↑描画処理ここまで

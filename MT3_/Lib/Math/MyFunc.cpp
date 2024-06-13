@@ -53,7 +53,7 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 int FrameToClock(int count, int tranceMode) {
 
 	int result = 0;
-	enum TranceMode {
+	enum TranceMode{
 		Sec,
 		Min,
 		Hour
@@ -1691,6 +1691,97 @@ bool Collision_AABB_Sphere(const AABB& aabb, const EqualSphere& sphere)
 	return dist <= sphere.radius_ ? true : false;
 }
 
+bool Collision_AABB_Line(AABB aabb, const Line& line)
+{
+
+	//Vec3 dif = line.end_ - line.origin_;
+	//Vec3 hitPos[2][4];
+	//Vec3 normal[2][4] = {
+	//	{// XY平面
+	//	{1.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},// X
+	//	{0.0f,1.0f,0.0f},{0.0f,1.0f,0.0f}// Y
+	//	},
+	//	{// XZ平面
+	//	{1.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},// X
+	//	{0.0f,0.0f,1.0f},{0.0f,0.0f,1.0f}// Z
+	//	}
+	//};
+
+	//float dot[2][4];
+	//int index[2][4];
+
+	//for(int i = 0; i < 2; i++){
+	//	for(int j = 0; j < 4; j++){
+	//		dot[i][j] = Dot(normal[i][j], dif);
+
+	//		// tを求める
+	//		Vec3 point;
+	//		if(j % 2 == 0){
+	//			point = { *aabb.min.x,*aabb.min.y, *aabb.min.z };
+	//		} else{
+	//			point = { *aabb.max.x,*aabb.max.y, *aabb.max.z };
+	//		}
+
+	//		float distance = Dot(point - line.origin_, normal[i][j]);
+	//		float t = distance / dot[i][j];
+
+	//		// 衝突点
+	//		hitPos[i][j] = (dif * t) + line.origin_;
+
+	//		// 要素番号
+	//		index[i][j] = j;
+	//	}
+	//}
+
+	//if()
+
+	//aabb;
+	//line;
+
+	float tmin = 0.0f;
+	float tmax = 1.0f;
+
+	Vec3 dif = line.end_ - line.origin_;
+
+	if(dif.x != 0.0f) {
+		float tx1 = (*aabb.min.x - line.origin_.x) / dif.x;
+		float tx2 = (*aabb.max.x - line.origin_.x) / dif.x;
+
+		tmin = (std::max)(tmin, (std::min)(tx1, tx2));
+		tmax = (std::min)(tmax, (std::max)(tx1, tx2));
+	} else {
+		if(line.origin_.x < *aabb.min.x || line.origin_.x > *aabb.max.x) {
+			return false;
+		}
+	}
+
+	if(dif.y != 0.0f) {
+		float ty1 = (*aabb.min.y - line.origin_.y) / dif.y;
+		float ty2 = (*aabb.max.y - line.origin_.y) / dif.y;
+
+		tmin = (std::max)(tmin, (std::min)(ty1, ty2));
+		tmax = (std::min)(tmax, (std::max)(ty1, ty2));
+	} else {
+		if(line.origin_.z < *aabb.min.z || line.origin_.z > *aabb.max.z) {
+			return false;
+		}
+	}
+
+	if(dif.z != 0.0f) {
+		float tz1 = (*aabb.min.z - line.origin_.z) / dif.z;
+		float tz2 = (*aabb.max.z - line.origin_.z) / dif.z;
+
+		tmin = (std::max)(tmin, (std::min)(tz1, tz2));
+		tmax = (std::min)(tmax, (std::max)(tz1, tz2));
+	} else {
+		if(line.origin_.z < *aabb.min.z || line.origin_.z > *aabb.max.z) {
+			return false;
+		}
+	}
+
+	return tmax >= tmin;
+}
+
 
 //================================================================
 //                     オリジナル描画関数
@@ -2503,8 +2594,7 @@ void DrawHitPos_Plane_Line(const Vec3& normal, const Vec3& point, const Line& li
 void DrawSegment(
 	const Line& seg,
 	const Matrix4x4& viewPjojectionMatrix,
-	const Matrix4x4& viewportMatrix,
-	uint32_t color){
+	const Matrix4x4& viewportMatrix){
 
 	// レンダリング用の行列
 	Matrix4x4 worldMatrix = AffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f });
@@ -2518,7 +2608,7 @@ void DrawSegment(
 		int(origin.y),
 		int(end.x),
 		int(end.y),
-		color
+		seg.color_
 	);
 
 	Novice::DrawEllipse(
@@ -2568,7 +2658,7 @@ void DrawAABB(
 		// x方向の線
 		My::DrawLine(
 			{ calculatedPos[i * 2].x,calculatedPos[i * 2].y },
-			{ calculatedPos[(i * 2) + 1].x,calculatedPos[(i * 2)+ 1].y },
+			{ calculatedPos[(i * 2) + 1].x,calculatedPos[(i * 2) + 1].y },
 			color
 		);
 
@@ -2593,14 +2683,99 @@ void DrawAABB(
 
 		// z方向の線
 		My::DrawLine(
-			{ calculatedPos[i].x,calculatedPos[i].y},
+			{ calculatedPos[i].x,calculatedPos[i].y },
 			{ calculatedPos[i + 4].x,calculatedPos[i + 4].y },
 			color
 		);
 
 		My::DrawLine(
 			{ calculatedPos[i + 2].x,calculatedPos[i + 2].y },
-			{ calculatedPos[(i + 2) + 4].x,calculatedPos[(i + 2) + 4].y},
+			{ calculatedPos[(i + 2) + 4].x,calculatedPos[(i + 2) + 4].y },
+			color
+		);
+	}
+
+	// 分かりやすいように表示
+	Novice::DrawEllipse(
+		int(calculatedPos[2].x),
+		int(calculatedPos[2].y),
+		6, 6, 0.0f, 0x0000ffff, kFillModeSolid
+	);
+
+	Novice::DrawEllipse(
+		int(calculatedPos[5].x),
+		int(calculatedPos[5].y),
+		6, 6, 0.0f, 0xff0000ff, kFillModeSolid
+	);
+}
+
+void DrawOBB(
+	const OBB& obb,
+	const Matrix4x4& viewPjojectionMatrix,
+	const Matrix4x4& viewportMatrix,
+	uint32_t color
+){
+
+	// Z-を手前として手前側から左上⇒右上⇒左下⇒右下の順で格納する
+	Vec3 calculatedPos[8] = {
+		// 手前
+		{-obb.size.x,obb.size.y,-obb.size.z},// LT
+		{obb.size.x,obb.size.y,-obb.size.z},// RT
+		{-obb.size.x,-obb.size.y,-obb.size.z},// LB
+		{obb.size.x,-obb.size.y,-obb.size.z},// RB
+		// 奥
+		{-obb.size.x,obb.size.y,obb.size.z},// LT
+		{obb.size.x,obb.size.y,obb.size.z},// RT
+		{-obb.size.x,-obb.size.y,obb.size.z},// LB
+		{obb.size.x,-obb.size.y,obb.size.z} // RB
+	};
+
+	Matrix4x4 OBBrotateMat = RotateMatrix(obb.rotate);
+	Matrix4x4 vpVpMat = Multiply(viewPjojectionMatrix, viewportMatrix);
+	Matrix4x4 wvpVpMat = Multiply(OBBrotateMat, vpVpMat);
+
+	for(int32_t i = 0; i < 8; i++){
+		calculatedPos[i] = Multiply(calculatedPos[i], wvpVpMat);
+	}
+
+	// 描画
+	for(int i = 0; i < 2; i++){
+		// x方向の線
+		My::DrawLine(
+			{ calculatedPos[i * 2].x,calculatedPos[i * 2].y },
+			{ calculatedPos[(i * 2) + 1].x,calculatedPos[(i * 2) + 1].y },
+			color
+		);
+
+		My::DrawLine(
+			{ calculatedPos[i * 2 + 4].x,calculatedPos[i * 2 + 4].y },
+			{ calculatedPos[((i * 2) + 4) + 1].x,calculatedPos[((i * 2) + 4) + 1].y },
+			color
+		);
+
+		// y方向の線
+		My::DrawLine(
+			{ calculatedPos[i].x,calculatedPos[i].y },
+			{ calculatedPos[i + 2].x,calculatedPos[i + 2].y },
+			color
+		);
+
+		My::DrawLine(
+			{ calculatedPos[i + 4].x,calculatedPos[i + 4].y },
+			{ calculatedPos[(i + 4) + 2].x,calculatedPos[(i + 4) + 2].y },
+			color
+		);
+
+		// z方向の線
+		My::DrawLine(
+			{ calculatedPos[i].x,calculatedPos[i].y },
+			{ calculatedPos[i + 4].x,calculatedPos[i + 4].y },
+			color
+		);
+
+		My::DrawLine(
+			{ calculatedPos[i + 2].x,calculatedPos[i + 2].y },
+			{ calculatedPos[(i + 2) + 4].x,calculatedPos[(i + 2) + 4].y },
 			color
 		);
 	}

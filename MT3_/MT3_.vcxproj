@@ -111,6 +111,7 @@
     <ClCompile Include="Lib\Math\Easing.cpp" />
     <ClCompile Include="Lib\Math\MyFunc.cpp" />
     <ClCompile Include="Lib\Shapes\AABB.cpp" />
+    <ClCompile Include="Lib\Shapes\OBB.cpp" />
     <ClCompile Include="Lib\Shapes\Plane.cpp" />
     <ClCompile Include="Lib\Shapes\Sphere.cpp" />
     <ClCompile Include="main.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Lib\Math\Enums.h" />
     <ClInclude Include="Lib\Math\MyFunc.h" />
     <ClInclude Include="Lib\Shapes\AABB.h" />
+    <ClInclude Include="Lib\Shapes\OBB.h" />
     <ClInclude Include="Lib\Shapes\Plane.h" />
     <ClInclude Include="Lib\Shapes\Line.h" />
     <ClInclude Include="Lib\Shapes\Sphere.h" />

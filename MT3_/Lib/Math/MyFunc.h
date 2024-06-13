@@ -21,6 +21,7 @@
 #include "Plane.h"
 #include "Triangle.h"
 #include "AABB.h"
+#include "OBB.h"
 
 //何もしない関数
 void Void();
@@ -221,6 +222,8 @@ bool Collision_Triangle_Line(const Triangle& triangle, const Line& line);
 bool Collision_AABB_AABB(const AABB& aabb1, const AABB& aabb2);
 // AABBと正球の当たり判定
 bool Collision_AABB_Sphere(const AABB& aabb, const EqualSphere& sphere);
+// AABBと線の当たり判定
+bool Collision_AABB_Line(AABB aabb, const Line& line);
 
 //================================================================
 //                     オリジナル描画関数
@@ -291,13 +294,20 @@ void DrawHitPos_Plane_Line(
 void DrawSegment(
 	const Line& seg,
 	const Matrix4x4& viewPjojectionMatrix,
-	const Matrix4x4& viewportMatrix,
-	uint32_t color
+	const Matrix4x4& viewportMatrix
 );
 
 // AABBを描画する関数
 void DrawAABB(
 	const AABB& aabb,
+	const Matrix4x4& viewPjojectionMatrix,
+	const Matrix4x4& viewportMatrix,
+	uint32_t color
+);
+
+// OBBを描画する関数
+void DrawOBB(
+	const OBB& obb,
 	const Matrix4x4& viewPjojectionMatrix,
 	const Matrix4x4& viewportMatrix,
 	uint32_t color

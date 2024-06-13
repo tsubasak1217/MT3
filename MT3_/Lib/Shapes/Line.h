@@ -11,14 +11,14 @@ struct Line
 	int type_;
 
 	Line(){};
-	Line(const Vec3& origin, const Vec3& end, int type = SEGMENT,uint32_t color = 0xffffff){
+	Line(const Vec3& origin, const Vec3& end, int type = SEGMENT,uint32_t color = 0xffffffff){
 		origin_ = origin;
 		end_ = end;
 		type_ = type;
 		color_ = color;
 	}
 
-	void Init(const Vec3& origin, const Vec3& end, int type = SEGMENT, uint32_t color = 0xffffff){
+	void Init(const Vec3& origin, const Vec3& end, int type = SEGMENT, uint32_t color = 0xffffffff){
 		origin_ = origin;
 		end_ = end;
 		type_ = type;
