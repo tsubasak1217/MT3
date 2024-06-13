@@ -21,14 +21,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	AABB aabb({ -2.0f, 0.0f, -2.0f }, { -1.0f,1.0f,-1.0f });
+	AABB aabb({ -0.5f, -0.5f, -0.5f }, { 0.5f,0.5f,0.5f });
 	OBB obb(
-		{ -1.5f, 0.5f, -1.5f },//center
+		{ 0.0f, 0.0f, 0.0f },//center
 		{ 0.1f, 0.2f, 1.3f },//rotate
 		{ 1.0f, 1.0f, 1.0f }//size
 	);
 
-	Line line({ 0.0f,0.0f,0.0f }, { 0.0f,0.5f,0.0f },SEGMENT);
+	Line line({ 0.7f,0.3f,0.0f }, { 2.0f,-0.5f,0.0f },SEGMENT);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
