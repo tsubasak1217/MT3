@@ -1755,6 +1755,21 @@ bool Collision_OBB_Sphere(OBB obb, EqualSphere sphere)
 	return Collision_AABB_Sphere(OBBlocal,moved);
 }
 
+bool Collision_OBB_Line(OBB obb, Line line)
+{
+	// AABBに戻したOBB
+	AABB OBBlocal(obb.size * -1.0f, obb.size);
+
+	// OBBの回転を打ち消す行列
+	Matrix4x4 inverseOBB = InverseMatrix(AffineMatrix({ 1.0f,1.0f,1.0f }, obb.rotate, obb.center));
+
+	// OBBに合わせて戻した線の作成
+	Line movedLine(Multiply(line.origin_, inverseOBB), Multiply(line.end_, inverseOBB));
+
+	// 判定
+	return Collision_AABB_Line(OBBlocal,movedLine);
+}
+
 
 //================================================================
 //                     オリジナル描画関数

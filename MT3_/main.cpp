@@ -6,7 +6,7 @@
 #include "Plane.h"
 #include "RenderMatrixes.h"
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_08";
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_09";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -21,20 +21,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	AABB aabb({ -2.0f, 0.0f, -2.0f }, { -1.0f,1.0f,-1.0f });
-
-	EqualSphere sphere(
-		0.5f, 1.0f, { 0.0f,0.0f,0.0f }, { 1.0f,0.5f,1.0f },
-		renderMat.GetViewProjectionMat(), renderMat.GetViewportMat()
-	);
+	Line line({ -0.8f,-0.3f,0.0f }, { -0.3f,0.2f,0.5f },SEGMENT);
 
 	OBB obb(
-		{ 0.0f, 0.0f, 0.0f },//center
+		{ -1.0f, 0.0f, 0.0f },//center
 		{ 0.1f, 0.2f, 1.3f },//rotate
 		{ 0.5f, 0.5f, 0.5f }//size
 	);
-
-	int subdivision = 16;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -61,9 +54,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::DragFloat3("size", &obb.size.x, 0.01f);
 		ImGui::End();
 
-		ImGui::Begin("Sphere");
-		ImGui::DragFloat3("translate", &sphere.translate_.x, 0.05f);
-		ImGui::DragFloat("size", &sphere.radius_, 0.05f);
+		ImGui::Begin("Line");
+		ImGui::DragFloat3("origin", &line.origin_.x, 0.05f);
+		ImGui::DragFloat3("end", &line.end_.x, 0.05f);
 		ImGui::End();
 
 
@@ -77,7 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		camera->Update();
 		renderMat.Update();
 
-		if(Collision_OBB_Sphere(obb,sphere)){
+		if(Collision_OBB_Line(obb,line)){
 			obb.color = 0xff0000ff;
 		} else{
 			obb.color = 0xffffffff;
@@ -98,7 +91,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawOBB(obb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), obb.color);
 
 		// sphere
-		sphere.Draw(subdivision);
+		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat());
 
 		///
 		/// ↑描画処理ここまで
