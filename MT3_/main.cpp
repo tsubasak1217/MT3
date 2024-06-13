@@ -21,14 +21,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	AABB aabb({ -0.5f, -0.5f, -0.5f }, { 0.5f,0.5f,0.5f });
+	AABB aabb({ -2.0f, 0.0f, -2.0f }, { -1.0f,1.0f,-1.0f });
+
+	EqualSphere sphere(
+		0.5f, 1.0f, { 0.0f,0.0f,0.0f }, { 1.0f,0.5f,1.0f },
+		renderMat.GetViewProjectionMat(), renderMat.GetViewportMat()
+	);
+
 	OBB obb(
 		{ 0.0f, 0.0f, 0.0f },//center
 		{ 0.1f, 0.2f, 1.3f },//rotate
-		{ 1.0f, 1.0f, 1.0f }//size
+		{ 0.5f, 0.5f, 0.5f }//size
 	);
 
-	Line line({ 0.7f,0.3f,0.0f }, { 2.0f,-0.5f,0.0f },SEGMENT);
+	int subdivision = 16;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -49,17 +55,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Text("[ CLICK WHEEL & MOVE MOUSE ] -> moveCamera");
 		ImGui::End();
 
-		ImGui::Begin("AABB");
-		ImGui::DragFloat3("point1##0", &aabb.point[0].x,0.1f);
-		ImGui::DragFloat3("point2##0", &aabb.point[1].x, 0.1f);
+		//ImGui::Begin("AABB");
+		//ImGui::DragFloat3("point1##0", &aabb.point[0].x,0.1f);
+		//ImGui::DragFloat3("point2##0", &aabb.point[1].x, 0.1f);
+		//ImGui::End();
+
+		ImGui::Begin("OBB");
+		ImGui::DragFloat3("center", &obb.center.x, 0.1f);
+		ImGui::DragFloat3("rotate", &obb.rotate.x, 0.005f);
+		ImGui::DragFloat3("size", &obb.size.x, 0.01f);
 		ImGui::End();
 
 		ImGui::Begin("Line");
 		ImGui::DragFloat3("origin", &line.origin_.x, 0.05f);
 		ImGui::DragFloat3("end", &line.end_.x, 0.05f);
 		ImGui::End();
-
-		aabb.UpdateMinMax();
 
 
 
@@ -72,10 +82,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		camera->Update();
 		renderMat.Update();
 
-		if(Collision_AABB_Line(aabb,line)){
-			aabb.color = 0xff0000ff;
+		if(Collision_OBB_Sphere(obb,sphere)){
+			obb.color = 0xff0000ff;
 		} else{
-			aabb.color = 0xffffffff;
+			obb.color = 0xffffffff;
 		}
 
 		///
@@ -90,8 +100,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
 
 		// AABB
-		DrawAABB(aabb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(),aabb.color);
-		//DrawOBB(obb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), aabb.color);
+		DrawOBB(obb, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), obb.color);
 
 		// Line
 		DrawSegment(line, *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat());

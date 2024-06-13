@@ -1782,6 +1782,22 @@ bool Collision_AABB_Line(AABB aabb, const Line& line)
 	return tmax >= tmin;
 }
 
+bool Collision_OBB_Sphere(OBB obb, const EqualSphere& sphere)
+{
+	// AABBに戻したOBB
+	AABB OBBlocal(obb.size * - 1.0f, obb.size);
+
+	// OBBの回転を打ち消す行列
+	Matrix4x4 inverseOBBrotate = InverseMatrix(RotateMatrix(obb.rotate));
+
+	EqualSphere moved(
+		sphere.radius_,sphere.scale_,
+		Multiply(sphere.translate_,inverseOBBrotate)
+	);
+
+	return false;
+}
+
 
 //================================================================
 //                     オリジナル描画関数
@@ -2730,9 +2746,9 @@ void DrawOBB(
 		{obb.size.x,-obb.size.y,obb.size.z} // RB
 	};
 
-	Matrix4x4 OBBrotateMat = RotateMatrix(obb.rotate);
+	Matrix4x4 OBBworldMat = AffineMatrix({1.0f,1.0f,1.0f},obb.rotate,obb.center);
 	Matrix4x4 vpVpMat = Multiply(viewPjojectionMatrix, viewportMatrix);
-	Matrix4x4 wvpVpMat = Multiply(OBBrotateMat, vpVpMat);
+	Matrix4x4 wvpVpMat = Multiply(OBBworldMat, vpVpMat);
 
 	for(int32_t i = 0; i < 8; i++){
 		calculatedPos[i] = Multiply(calculatedPos[i], wvpVpMat);

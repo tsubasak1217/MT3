@@ -10,12 +10,12 @@ public:
 
 	Sphere(
 		const Vec3& size, const Vec3& scale, const Vec3& rotate, const Vec3& translate,
-		Matrix4x4* viewProjection, Matrix4x4* viewport,
+		Matrix4x4* viewProjection = nullptr, Matrix4x4* viewport = nullptr,
 		uint32_t color = 0xffffffff
 	);
 	void Init(
 		const Vec3& size, const Vec3& scale, const Vec3& rotate, const Vec3& translate,
-		Matrix4x4* viewProjection, Matrix4x4* viewport,
+		Matrix4x4* viewProjection = nullptr, Matrix4x4* viewport = nullptr,
 		uint32_t color = 0xffffffff
 	);
 
@@ -46,12 +46,12 @@ public:
 
 	EqualSphere(
 		float radius, float scale, const Vec3& rotate, const Vec3& translate,
-		Matrix4x4* viewProjection, Matrix4x4* viewport,
+		Matrix4x4* viewProjection = nullptr, Matrix4x4* viewport = nullptr,
 		uint32_t color = 0xffffffff
 	);
 	void Init(
 		float radius, float scale, const Vec3& rotate, const Vec3& translate,
-		Matrix4x4* viewProjection, Matrix4x4* viewport,
+		Matrix4x4* viewProjection = nullptr, Matrix4x4* viewport = nullptr,
 		uint32_t color = 0xffffffff
 	);
 

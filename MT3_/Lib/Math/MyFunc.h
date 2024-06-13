@@ -224,6 +224,8 @@ bool Collision_AABB_AABB(const AABB& aabb1, const AABB& aabb2);
 bool Collision_AABB_Sphere(const AABB& aabb, const EqualSphere& sphere);
 // AABBと線の当たり判定
 bool Collision_AABB_Line(AABB aabb, const Line& line);
+// OBBと球の当たり判定
+bool Collision_OBB_Sphere(OBB obb, const EqualSphere& sphere);
 
 //================================================================
 //                     オリジナル描画関数
