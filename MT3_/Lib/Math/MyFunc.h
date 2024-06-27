@@ -228,6 +228,10 @@ bool Collision_AABB_Line(AABB aabb, const Line& line);
 bool Collision_OBB_Sphere(OBB obb, EqualSphere sphere);
 // OBBと線の当たり判定
 bool Collision_OBB_Line(OBB obb, Line line);
+// Convex同士の当たり判定
+bool Collision_OBB_OBB(OBB obb1, OBB obb2);
+Vec2 GetProjectionRange(std::vector<Vec3>vertices,const Vec3& axis);
+bool CheckProjentionCollision(std::vector<Vec3>vertices1, std::vector<Vec3>vertices2, const Vec3& axis);
 
 //================================================================
 //                     オリジナル描画関数

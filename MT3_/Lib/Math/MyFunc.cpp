@@ -1741,10 +1741,10 @@ bool Collision_AABB_Line(AABB aabb, const Line& line)
 bool Collision_OBB_Sphere(OBB obb, EqualSphere sphere)
 {
 	// AABBに戻したOBB
-	AABB OBBlocal(obb.size * - 1.0f, obb.size);
+	AABB OBBlocal(obb.size * -1.0f, obb.size);
 
 	// OBBの回転を打ち消す行列
-	Matrix4x4 inverseOBB = InverseMatrix(AffineMatrix({1.0f,1.0f,1.0f}, obb.rotate,obb.center));
+	Matrix4x4 inverseOBB = InverseMatrix(AffineMatrix({ 1.0f,1.0f,1.0f }, obb.rotate, obb.center));
 
 	// OBBに合わせて戻した球の作成
 	EqualSphere moved;
@@ -1752,7 +1752,7 @@ bool Collision_OBB_Sphere(OBB obb, EqualSphere sphere)
 	moved.translate_ = Multiply(sphere.translate_, inverseOBB);
 
 	// 判定
-	return Collision_AABB_Sphere(OBBlocal,moved);
+	return Collision_AABB_Sphere(OBBlocal, moved);
 }
 
 bool Collision_OBB_Line(OBB obb, Line line)
@@ -1767,7 +1767,126 @@ bool Collision_OBB_Line(OBB obb, Line line)
 	Line movedLine(Multiply(line.origin_, inverseOBB), Multiply(line.end_, inverseOBB));
 
 	// 判定
-	return Collision_AABB_Line(OBBlocal,movedLine);
+	return Collision_AABB_Line(OBBlocal, movedLine);
+}
+
+bool Collision_OBB_OBB(OBB obb1, OBB obb2)
+{
+	// ローカル頂点
+	std::vector<std::vector<Vec3>>vertices(2,std::vector<Vec3>(8));
+	vertices[0][0] = { -obb1.size.x,obb1.size.y,-obb1.size.z };// LT
+	vertices[0][1] = { obb1.size.x,obb1.size.y,-obb1.size.z };// RT
+	vertices[0][2] = { -obb1.size.x,-obb1.size.y,-obb1.size.z };// LB
+	vertices[0][3] = { obb1.size.x,-obb1.size.y,-obb1.size.z };// RB
+	vertices[0][4] = { -obb1.size.x,obb1.size.y,obb1.size.z };// LT
+	vertices[0][5] = { obb1.size.x,obb1.size.y,obb1.size.z };// RT
+	vertices[0][6] = { -obb1.size.x,-obb1.size.y,obb1.size.z };// LB
+	vertices[0][7] = { obb1.size.x,-obb1.size.y,obb1.size.z };// RB
+
+	vertices[1][0] = { -obb2.size.x,obb2.size.y,-obb2.size.z };// LT
+	vertices[1][1] = { obb2.size.x,obb2.size.y,-obb2.size.z };// RT
+	vertices[1][2] = { -obb2.size.x,-obb2.size.y,-obb2.size.z };// LB
+	vertices[1][3] = { obb2.size.x,-obb2.size.y,-obb2.size.z };// RB
+	vertices[1][4] = { -obb2.size.x,obb2.size.y,obb2.size.z };// LT
+	vertices[1][5] = { obb2.size.x,obb2.size.y,obb2.size.z };// RT
+	vertices[1][6] = { -obb2.size.x,-obb2.size.y,obb2.size.z };// LB
+	vertices[1][7] = { obb2.size.x,-obb2.size.y,obb2.size.z };// RB
+
+	// ワールド行列を作成
+	Matrix4x4 OBBworldMat[2] = {
+		AffineMatrix({1.0f,1.0f,1.0f},obb1.rotate,obb1.center),
+		AffineMatrix({1.0f,1.0f,1.0f},obb2.rotate,obb2.center)
+	};
+
+	// ワールド座標に変換
+	for(int32_t i = 0; i < 2; i++){
+		for(int32_t j = 0; j < 8; j++){
+			vertices[i][j] = Multiply(vertices[i][j], OBBworldMat[i]);
+		}
+	}
+
+	// 面法線
+	Vec3 normal[2][3] = {
+		{
+		{vertices[0][1] - vertices[0][0]},
+		{vertices[0][2] - vertices[0][0]},
+		{vertices[0][4] - vertices[0][0]}
+		},
+		{
+		{vertices[1][1] - vertices[1][0]},
+		{vertices[1][2] - vertices[1][0]},
+		{vertices[1][4] - vertices[1][0]}
+		}
+	};
+
+	// 面法線の中から分離軸を探す
+	for(int32_t i = 0; i < 2; i++){
+		for(int32_t j = 0; j < 3; j++){
+
+			// 影が接触していないものが見つかった時点でfalse
+			if(CheckProjentionCollision(vertices[0], vertices[1], normal[i][j]) == false){
+				return false;
+			}
+		}
+	}
+
+	// クロス積を計算
+	Vec3 cross[3][3];
+	for(int32_t i = 0; i < 3; i++){
+		for(int32_t j = 0; j < 3; j++){
+			cross[i][j] = Cross(normal[0][i], normal[1][j],kWorld);
+		}
+	}
+
+	// クロスベクトルの中から分離軸を探す
+	for(int32_t i = 0; i < 3; i++){
+		for(int32_t j = 0; j < 3; j++){
+
+			// 影が接触していないものが見つかった時点でfalse
+			if(CheckProjentionCollision(vertices[0], vertices[1], cross[i][j]) == false){
+				return false;
+			}
+		}
+	}
+
+	// ここまで来たらtrue
+	return true;
+}
+
+Vec2 GetProjectionRange(std::vector<Vec3> vertices, const Vec3& axis)
+{
+	std::vector<float>dot;
+	Vec3 normalAxis = Normalize(axis);
+
+	for(int i = 0; i < vertices.size(); i++){
+		dot.push_back(
+			Dot(vertices[i], normalAxis)
+		);
+	}
+
+	float min = (std::ranges::min)(dot);
+	float max = (std::ranges::max)(dot);
+
+	return { min,max };
+}
+
+bool CheckProjentionCollision(std::vector<Vec3> vertices1, std::vector<Vec3>vertices2, const Vec3& axis)
+{
+	// 射影した範囲を取得
+	Vec2 range[2];// xにはmin, yにはmaxが入る
+	range[0] = GetProjectionRange(vertices1, axis);
+	range[1] = GetProjectionRange(vertices2, axis);
+
+	// すべての影の中のmin,maxを計算
+	Vec2 allRange = { (std::min)(range[0].x,range[1].x),(std::max)(range[0].y,range[1].y) };
+
+	// 影の長さの合計値
+	float sumLength = (range[0].y - range[0].x) + (range[1].y - range[1].x);
+	// すべての影で計算したmin,maxの範囲の長さ
+	float subLength = allRange.y - allRange.x;
+
+	// 影が接触していたらtrue
+	return subLength <= sumLength;
 }
 
 
@@ -2718,7 +2837,7 @@ void DrawOBB(
 		{obb.size.x,-obb.size.y,obb.size.z} // RB
 	};
 
-	Matrix4x4 OBBworldMat = AffineMatrix({1.0f,1.0f,1.0f},obb.rotate,obb.center);
+	Matrix4x4 OBBworldMat = AffineMatrix({ 1.0f,1.0f,1.0f }, obb.rotate, obb.center);
 	Matrix4x4 vpVpMat = Multiply(viewPjojectionMatrix, viewportMatrix);
 	Matrix4x4 wvpVpMat = Multiply(OBBworldMat, vpVpMat);
 
