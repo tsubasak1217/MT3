@@ -5,8 +5,9 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "RenderMatrixes.h"
+#include <random>
 
-const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_02_10";
+const char kWindowTitle[] = "LE2A_12_クロカワツバサ_MT3_03_00";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -21,20 +22,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera());
 	RenderMatrixes renderMat(camera.get());
 
-	Line line({ -0.8f,-0.3f,0.0f }, { -0.3f,0.2f,0.5f },SEGMENT);
+	std::vector<Vec3>controlPoints(1, { 0.0f,0.0f,0.0f });
 
-	OBB obb[2] = {
-		OBB(
-		{ -1.0f, 0.0f, -1.0f },//center
-		{ 0.1f, 0.2f, 1.3f },//rotate
-		{ 0.5f, 0.5f, 0.5f }//size
-		),
-		OBB(
-		{ 1.0f, 0.0f, 1.0f },//center
-		{ 1.1f, 0.6f, 0.3f },//rotate
-		{ 0.5f, 0.5f, 0.5f }//size
-		)
-	};
+	const int kMaxPoints = 7;
+	for(int32_t i = 0; i < kMaxPoints; i++){
+
+		int prev = Clamp(i - 1, 0, i);
+
+		Vec3 vec = Normalize({
+			(float)((std::rand() % 100) - 50),
+			(float)((std::rand() % 100) - 50),
+			(float)((std::rand() % 100) - 50)
+		});
+
+		controlPoints.push_back(
+			controlPoints[prev] + vec
+		);
+	}
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while(Novice::ProcessMessage() == 0) {
@@ -56,15 +60,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 
 		ImGui::Begin("OBB");
-		ImGui::Text("Center");
-		ImGui::DragFloat3("OBB_1##1", &obb[0].center.x, 0.1f);
-		ImGui::DragFloat3("OBB_2##1", &obb[1].center.x, 0.1f);
-		ImGui::Text("Rotate");
-		ImGui::DragFloat3("OBB_1##2", &obb[0].rotate.x, 0.005f);
-		ImGui::DragFloat3("OBB_2##2", &obb[1].rotate.x, 0.005f);
-		ImGui::Text("Translate");
-		ImGui::DragFloat3("OBB_1##3", &obb[0].size.x, 0.01f);
-		ImGui::DragFloat3("OBB_2##3", &obb[1].size.x, 0.01f);
+		//ImGui::Text("Center");
+		//ImGui::DragFloat3("OBB_1##1", &obb[0].center.x, 0.1f);
+		//ImGui::DragFloat3("OBB_2##1", &obb[1].center.x, 0.1f);
+		//ImGui::Text("Rotate");
+		//ImGui::DragFloat3("OBB_1##2", &obb[0].rotate.x, 0.005f);
+		//ImGui::DragFloat3("OBB_2##2", &obb[1].rotate.x, 0.005f);
+		//ImGui::Text("Translate");
+		//ImGui::DragFloat3("OBB_1##3", &obb[0].size.x, 0.01f);
+		//ImGui::DragFloat3("OBB_2##3", &obb[1].size.x, 0.01f);
 		ImGui::End();
 
 
@@ -77,12 +81,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		camera->Update();
 		renderMat.Update();
 
-		if(Collision_OBB_OBB(obb[0],obb[1])){
-			obb[0].color = 0xff0000ff;
-		} else{
-			obb[0].color = 0xffffffff;
-		}
-
 		///
 		/// ↑更新処理ここまで
 		///
@@ -94,10 +92,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッド
 		DrawGrid(renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
 
-		// OBB
-		for(int i = 0; i < 2; i++){
-			DrawOBB(obb[i], *renderMat.GetViewProjectionMat(), *renderMat.GetViewportMat(), obb[i].color);
-		}
+		// スプライン曲線
+		DrawSpline3D(controlPoints, 32, 0xffffffff,renderMat.GetViewProjectionMat(), renderMat.GetViewportMat());
+
 
 		///
 		/// ↑描画処理ここまで

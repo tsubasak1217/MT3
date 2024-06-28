@@ -100,6 +100,9 @@ void ShiftLineCtrl(Vec2& pos1, Vec2& pos2, float distance);
 int negaZero(int num);
 float negaZero(float num);
 
+// クランプ
+int Clamp(int num, int min, int max);
+
 //================================================================
 //                      行列の計算関数
 //================================================================
@@ -319,6 +322,23 @@ void DrawOBB(
 	const Matrix4x4& viewPjojectionMatrix,
 	const Matrix4x4& viewportMatrix,
 	uint32_t color
+);
+
+//================================================================
+//                     曲線計算、描画関数
+//================================================================
+
+// ---------------スプライン曲線の頂点計算用の関数---------------------
+Vec2 Complement(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4, float t);
+Vec2 CatmullRom(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4, float t);
+Vec3 CatmullRom(const Vec3& p1, const Vec3& p2, const Vec3& p3, const Vec3& p4, float t);
+Vec3 CatmullRom(const std::vector<Vec3>& controlPoints, float t);
+Vec3 PrimaryCatmullRom(const Vec3& p1, const Vec3& p2, const Vec3& p3, const Vec3& p4, float t);
+
+// 描画
+void DrawSpline3D(
+	const std::vector<Vec3>& controlPoints, int32_t subdivision, uint32_t color,
+	Matrix4x4* viewPjojectionMatrix, Matrix4x4* viewportMatrix
 );
 
 //================================================================

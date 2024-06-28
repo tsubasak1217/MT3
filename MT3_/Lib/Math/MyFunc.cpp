@@ -295,6 +295,13 @@ float negaZero(float num) {
 	return (num < 0) ? 0 : num;
 }
 
+int Clamp(int num, int min, int max)
+{
+	if(num < min){ return min; }
+	if(num > max){ return max; }
+	return num;
+}
+
 //================================================================
 //                        行列関数
 //================================================================
@@ -1773,7 +1780,7 @@ bool Collision_OBB_Line(OBB obb, Line line)
 bool Collision_OBB_OBB(OBB obb1, OBB obb2)
 {
 	// ローカル頂点
-	std::vector<std::vector<Vec3>>vertices(2,std::vector<Vec3>(8));
+	std::vector<std::vector<Vec3>>vertices(2, std::vector<Vec3>(8));
 	vertices[0][0] = { -obb1.size.x,obb1.size.y,-obb1.size.z };// LT
 	vertices[0][1] = { obb1.size.x,obb1.size.y,-obb1.size.z };// RT
 	vertices[0][2] = { -obb1.size.x,-obb1.size.y,-obb1.size.z };// LB
@@ -1834,7 +1841,7 @@ bool Collision_OBB_OBB(OBB obb1, OBB obb2)
 	Vec3 cross[3][3];
 	for(int32_t i = 0; i < 3; i++){
 		for(int32_t j = 0; j < 3; j++){
-			cross[i][j] = Cross(normal[0][i], normal[1][j],kWorld);
+			cross[i][j] = Cross(normal[0][i], normal[1][j], kWorld);
 		}
 	}
 
@@ -2899,6 +2906,189 @@ void DrawOBB(
 		int(calculatedPos[5].y),
 		6, 6, 0.0f, 0xff0000ff, kFillModeSolid
 	);
+}
+
+
+//================================================================
+//                     曲線計算、描画関数
+//================================================================
+
+// ---------------スプライン曲線の頂点計算用の関数---------------------
+
+Vec2 Complement(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4, float t)
+{
+	return(
+		(p1.operator*(-1.0f) + p2.operator*(3.0f) - p3.operator*(3.0f) + p4).operator*(t * t * t) +
+		(p1.operator*(2.0f) - p2.operator*(5.0f) + p3.operator*(4.0f) - p4).operator*(t * t) +
+		(p1.operator*(-1.0f) + p3).operator*(t) +
+		p2.operator*(2.0f)
+		).operator*(0.5f);
+}
+
+Vec2 CatmullRom(const Vec2& p1, const Vec2& p2, const Vec2& p3, const Vec2& p4, float t)
+{
+	t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+
+	if(t >= 0.0f && t < 0.33f) {// 1/3
+		return Complement(p1, p1, p2, p3, t / 0.33f);
+
+	} else if(t >= 0.33f && t < 0.66f) {// 2/3
+		return Complement(p1, p2, p3, p4, (t - 0.33f) / 0.33f);
+
+	} else {// 3/3
+		return Complement(p2, p3, p4, p4, (t - 0.66f) / 0.34f);
+	}
+}
+
+Vec3 CatmullRom(const Vec3& p1, const Vec3& p2, const Vec3& p3, const Vec3& p4, float t)
+{
+	t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+
+	// 二次元の平面に分解
+	Vec2 xy[4] = {
+		{p1.x,p1.y},
+		{p2.x,p2.y},
+		{p3.x,p3.y},
+		{p4.x,p4.y}
+	};
+
+	Vec2 zy[4] = {
+		{p1.z,p1.y},
+		{p2.z,p2.y},
+		{p3.z,p3.y},
+		{p4.z,p4.y}
+	};
+
+	// 結果を格納す変数
+	Vec2 xyResult;
+	Vec2 zyResult;
+	Vec3 result;
+
+	// tの値に応じて座標を計算
+	if(t >= 0.0f && t < 0.33f) {// 1/3
+		xyResult = Complement(xy[0], xy[0], xy[1], xy[2], t / 0.33f);
+		zyResult = Complement(zy[0], zy[0], zy[1], zy[2], t / 0.33f);
+
+	} else if(t >= 0.33f && t < 0.66f) {// 2/3
+		xyResult = Complement(xy[0], xy[1], xy[2], xy[3], (t - 0.33f) / 0.33f);
+		zyResult = Complement(zy[0], zy[1], zy[2], zy[3], (t - 0.33f) / 0.33f);
+
+	} else {// 3/3
+		xyResult = Complement(xy[1], xy[2], xy[3], xy[3], (t - 0.66f) / 0.34f);
+		zyResult = Complement(zy[1], zy[2], zy[3], zy[3], (t - 0.66f) / 0.34f);
+	}
+
+	// 三次元にする
+	result = { xyResult.x,xyResult.y,zyResult.x };
+
+	return result;
+}
+
+Vec3 CatmullRom(const std::vector<Vec3>& controlPoints, float t)
+{
+	t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+
+	Vec3 result;
+	std::vector<Vec3> tmpControlPoints = controlPoints;
+	// 要素数が必要数に達するまでコピーして追加
+	while(tmpControlPoints.size() < 4){
+		tmpControlPoints.push_back(tmpControlPoints.back());
+	}
+
+	int size = int(tmpControlPoints.size() - 1);
+	float width = 1.0f / size;
+	float t2 = std::fmod(t, width) / width;
+	int idx = int(t / width);
+
+	result = PrimaryCatmullRom(
+		tmpControlPoints[Clamp(idx - 1, 0, size)],
+		tmpControlPoints[idx],
+		tmpControlPoints[Clamp(idx + 1, 0, size)],
+		tmpControlPoints[Clamp(idx + 2, 0, size)],
+		t2
+	);
+
+	return result;
+}
+
+Vec3 PrimaryCatmullRom(const Vec3& p1, const Vec3& p2, const Vec3& p3, const Vec3& p4, float t)
+{
+	t = std::clamp(t, 0.0f, 1.0f);// tを0~1に収める
+	Vec2 xyResult;
+	Vec2 zyResult;
+	Vec3 result;
+
+	// 二次元の平面に分解
+	Vec2 xy[4] = {
+		{p1.x,p1.y},
+		{p2.x,p2.y},
+		{p3.x,p3.y},
+		{p4.x,p4.y}
+	};
+
+	Vec2 zy[4] = {
+		{p1.z,p1.y},
+		{p2.z,p2.y},
+		{p3.z,p3.y},
+		{p4.z,p4.y}
+	};
+
+	xyResult = Complement(xy[0], xy[1], xy[2], xy[3], t);
+	zyResult = Complement(zy[0], zy[1], zy[2], zy[3], t);
+	// 三次元にする
+	result = { xyResult.x,xyResult.y,zyResult.x };
+
+	return result;
+}
+
+
+// 曲線の描画
+
+void DrawSpline3D(
+	const std::vector<Vec3>& controlPoints, int32_t subdivision, uint32_t color,
+	Matrix4x4* viewPjojectionMatrix, Matrix4x4* viewportMatrix
+){
+	std::vector<Vec3>drawPoints;
+	std::vector<Vec3> tmpControlPoints = controlPoints;
+	int size = int(tmpControlPoints.size() - 1);
+
+	// 要素数が必要数に達するまでコピーして追加
+	while(tmpControlPoints.size() < 4){
+		tmpControlPoints.push_back(tmpControlPoints.back());
+	}
+
+	// レンダリング用の行列
+	Matrix4x4 wvpVpMatrix = Multiply(*viewPjojectionMatrix, *viewportMatrix);
+
+	// 4点ずつ見ていく
+	for(int idx = 0; idx <= size; idx++){
+		for(int32_t j = 0; j <= subdivision; j++){
+
+			float t = float(j) / float(subdivision);
+
+			drawPoints.push_back(
+				PrimaryCatmullRom(
+					tmpControlPoints[Clamp(idx - 1, 0, size)],
+					tmpControlPoints[idx],
+					tmpControlPoints[Clamp(idx + 1, 0, size)],
+					tmpControlPoints[Clamp(idx + 2, 0, size)],
+					t
+				)
+			);
+
+			drawPoints.back() = Multiply(drawPoints.back(), wvpVpMatrix);
+		}
+	}
+
+
+	// 描画
+	for(int32_t i = 0; i < drawPoints.size() - 1; i++){
+		My::DrawLine(
+			{ drawPoints[i].x,drawPoints[i].y },
+			{ drawPoints[i + 1].x,drawPoints[i + 1].y },
+			color
+		);
+	}
 }
 
 //================================================================
